@@ -1,0 +1,1226 @@
+{
+  "src/lib/components/DashNetwork.react.js": {
+    "description": "TODO: Write this up",
+    "displayName": "DashNetwork",
+    "methods": [
+      {
+        "name": "prepareOptions",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "options",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "registerGroupCallbacks",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "enableHciEvents",
+            "type": null
+          },
+          {
+            "name": "all_events",
+            "type": null
+          },
+          {
+            "name": "setProps",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "registerCallbacks",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "enableHciEvents",
+            "type": null
+          },
+          {
+            "name": "setProps",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "convertStringToFunction",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "function_string",
+            "type": null
+          }
+        ],
+        "returns": null
+      },
+      {
+        "name": "createClusterOptions",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "cluster_options",
+            "type": null
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": {
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "The ID used to identify this component in Dash callbacks."
+      },
+      "data": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "nodes": {
+              "name": "arrayOf",
+              "value": {
+                "name": "object"
+              },
+              "required": false
+            },
+            "edges": {
+              "name": "arrayOf",
+              "value": {
+                "name": "object"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Graph data object describing the graph to be drawn.\nPass a dict with two keys - 'nodes' and 'edges', set according to the vis.js documentation.\nIn Dash, this property also replaces vis.js setData function.\nSee https://visjs.github.io/vis-network/docs/network/#data",
+        "defaultValue": {
+          "value": "{\n    nodes: [{id: 1, cid: 1, label: 'Node 1', title: 'This is Node 1'},\n        {id: 2, cid: 1, label: 'Node 2', title: 'This is Node 2'},\n        {id: 3, cid: 1, label: 'Node 3', title: 'This is Node 3'},\n        {id: 4, label: 'Node 4', title: 'This is Node 4'},\n        {id: 5, label: 'Node 5', title: 'This is Node 5'}],\n    edges: [{from: 1, to: 3},\n        {from: 1, to: 2},\n        {from: 2, to: 4},\n        {from: 2, to: 5}]\n}",
+          "computed": false
+        }
+      },
+      "options": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "A graph configuration object.\nPass a dict set according to your preferences / usecase as per the vis.js documentation.\nIn Dash, this property also replaces vis.js setOptions function.\nSee https://visjs.github.io/vis-network/docs/network/#options",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Defines CSS styles which will override styles previously set."
+      },
+      "enableHciEvents": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              }
+            },
+            {
+              "name": "bool"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Either a boolean indicating if all event callbacks, triggered by human interaction, selection, dragging etc.,\nshould be enabled, or a list of strings\nindicating which ones should be used. If it's a list, you will need to specify one of the\nfollowing events: `click`, `doubleClick`, `oncontext`, `hold`, 'release', 'select',\n'selectNode', 'selectEdge', 'deselectNode', 'deselectEdge', 'dragStart', 'dragging', 'dragEnd',\n'controlNodeDragging', 'controlNodeDragEnd', 'hoverNode', 'blurNode', 'hoverEdge', 'blurEdge',\n'zoom', 'showPopup', 'hidePopup'.\nSee https://visjs.github.io/vis-network/docs/network/#events for more details",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "click": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when the user clicks the mouse of taps on a touchscreen device.\n{\n  nodes: [Array of selected nodeIds],\n  edges: [Array of selected edgeIds],\n  event: [Object] original click event,\n  pointer: {\n    DOM: {x:pointer_x, y:pointer_y},\n    canvas: {x:canvas_x, y:canvas_y}\n  }\n}\n\nThis is the structure common to all events. Specifically for the click event, the following property is added:\n\n{\n...\n  items: [Array of click items],\n}\n\nWhere the click items can be:\n  {nodeId:NodeId}            // node with given id clicked on\n  {nodeId:NodeId labelId:0}  // label of node with given id clicked on\n  {edgeId:EdgeId}            // edge with given id clicked on\n  {edge:EdgeId, labelId:0}   // label of edge with given id clicked onThe order of the items array is descending in z-order. Thus, to get the topmost item, get the value at index 0."
+      },
+      "doubleClick": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when the user double clicks the mouse or double taps on a touchscreen device.\nSince a double click is in fact 2 clicks, 2 click events are fired, followed by a double click event.\nIf you do not want to use the click events if a double click event is fired, just check the time\nbetween click events before processing them."
+      },
+      "oncontext": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\n   Fired when the user click on the canvas with the right mouse button.\n   The right mouse button does not select by default.\n   You can use the method getNodeAt to select the node if you want."
+      },
+      "hold": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\n   Fired when the user clicks and holds the mouse or taps and holds on a touchscreen device.\n   A click event is also fired in this case."
+      },
+      "release": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired after drawing on the canvas has been completed. Can be used to draw on top of the network."
+      },
+      "select": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nContains a list of selected nodes and edges.\nStruct is updated when a click, double click, context click, hold and release is performed on the graph."
+      },
+      "selectNode": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when a node has been selected by the user."
+      },
+      "selectEdge": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when an edge has been selected by the user."
+      },
+      "dragStart": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when starting a drag."
+      },
+      "dragging": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when dragging node(s) or the view."
+      },
+      "dragEnd": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when the drag has finished."
+      },
+      "controlNodeDragging": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when dragging control node. Control Edge is edge that is being dragged and contains ids of 'from' and 'to' nodes. If control node is not dragged over another node, 'to' field is undefined. Passes an object with properties structured as:\n{\n    nodes: [Array of selected nodeIds],\n    edges: [Array of selected edgeIds],\n    event: [Object] original click event,\n    pointer: {\n        DOM: {x:pointer_x, y:pointer_y},\n        canvas: {x:canvas_x, y:canvas_y}\n    },\n    controlEdge: {from:from_node_id, to:to_node_id}\n}"
+      },
+      "controlNodeDragEnd": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when the control node drag has finished."
+      },
+      "hoverNode": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired if the option interaction:{hover:true} is enabled and the mouse hovers over a node."
+      },
+      "blurNode": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired if the option interaction:{hover:true} is enabled and the mouse moved away from a node it was hovering over before."
+      },
+      "hoverEdge": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired if the option interaction:{hover:true} is enabled and the mouse hovers over an edge."
+      },
+      "blurEdge": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired if the option interaction:{hover:true} is enabled and the mouse moved away from an edge it was hovering over before."
+      },
+      "zoom": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when the user zooms in or out. The properties tell you which direction the zoom is in. The scale is a number greater than 0, which is the same that you get with network.getScale(). When fired by clicking the zoom in or zoom out navigation buttons, the pointer property of the object passed will be null. Passes an object with properties structured as:\n{\n  direction: '+'/'-',\n  scale: Number,\n  pointer: {x:pointer_x, y:pointer_y}\n}"
+      },
+      "showPopup": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when the popup (tooltip) is shown.\nReturns id of item corresponding to popup"
+      },
+      "hidePopup": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when the popup (tooltip) is hidden.\nReturns none"
+      },
+      "enablePhysicsEvents": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              }
+            },
+            {
+              "name": "bool"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Either a boolean indicating if all event callbacks triggered the physics simulation should be enabled,\nor a list of strings\nindicating which ones should be used. If it's a list, you will need to specify one of the\nfollowing events: `startStabilizing`, `stabilizationProgress`, `stabilizationIterationsDone`, `stabilized`.\nSee https://visjs.github.io/vis-network/docs/network/#events for more details.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "startStabilizing": {
+        "type": {
+          "name": "any"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enablePhysicsEvents` is set to `True`, or that `enablePhysicsEvents`\nis a list that contains this event type.\nFired when stabilization starts.\nThis is also the case when you drag a node and the physics simulation restarts to stabilize again.\nStabilization does not necessarily imply 'without showing'."
+      },
+      "stabilizationProgress": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enablePhysicsEvents` is set to `True`, or that `enablePhysicsEvents`\nis a list that contains this event type.\nFired when a multiple of the updateInterval number of iterations is reached. This only occurs in the 'hidden'\nstabilization. Passes an object with properties structured as:\n{\n  iterations: Number // iterations so far,\n  total: Number      // total iterations in options\n}"
+      },
+      "stabilizationIterationsDone": {
+        "type": {
+          "name": "any"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enablePhysicsEvents` is set to `True`, or that `enablePhysicsEvents`\nis a list that contains this event type.\nFired when the 'hidden' stabilization finishes.\nThis does not necessarily mean the network is stabilized;\nit could also mean that the amount of iterations defined in the options has been reached."
+      },
+      "stabilized": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enablePhysicsEvents` is set to `True`, or that `enablePhysicsEvents`\nis a list that contains this event type.\nFired when the network has stabilized or when the stopSimulation() has been called. The amount of iterations it\ntook could be used to tweak the maximum amount of iterations needed to stabilize the network. Passes an object\nwith properties structured as:\n{\n  iterations: Number // iterations it took\n}"
+      },
+      "enableOtherEvents": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              }
+            },
+            {
+              "name": "bool"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Either a boolean indicating if all event callbacks triggered the canvas, rendering, view and configuration\nmodules should be enabled, or a list of strings\nindicating which ones should be used. If it's a list, you will need to specify one of the\nfollowing events: `resize`, `initRedraw`, `beforeDrawing`, `afterDrawing`, `animationFinished`,\n`configChange`.\nSee https://visjs.github.io/vis-network/docs/network/#events for more details.",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "resize": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired when the size of the canvas has been resized, either by a redraw call when the container div has changed\nin size, a setSize() call with new values or a setOptions() with new width and/or height values. Passes an object\nwith properties structured as:\n{\n  width: Number     // the new width  of the canvas\n  height: Number    // the new height of the canvas\n  oldWidth: Number  // the old width  of the canvas\n  oldHeight: Number // the old height of the canvas\n}"
+      },
+      "initRedraw": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired before the redrawing begins. The simulation step has completed at this point. Can be used to move custom\nelements before starting drawing the new frame."
+      },
+      "beforeDrawing": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\n   Fired after the canvas has been cleared, scaled and translated to the viewing position but before all edges\n   and nodes are drawn. Can be used to draw behind the network."
+      },
+      "afterDrawing": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired after drawing on the canvas has been completed. Can be used to draw on top of the network."
+      },
+      "animationFinished": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents`\nis a list that contains this event type.\nFired when an animation is finished."
+      },
+      "configChange": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents`\nis a list that contains this event type.\nFired when a user changes any option in the configurator.\nThe options object can be used with the setOptions method or stringified using JSON.stringify().\nYou do not have to manually put the options into the network: this is done automatically. You can use the event\nto store user options in the database."
+      },
+      "destroy": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nRemove the network from the DOM and remove all Hammer bindings and references.\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "on": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "event_name": {
+              "name": "string",
+              "required": false
+            },
+            "callback": {
+              "name": "string",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nSet an event listener. Depending on the type of event you get different parameters for\nthe callback function. Look at the event section of the documentation for more information.\ncallback must contain a valid javascript function\nReturns: None"
+      },
+      "off": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "event_name": {
+              "name": "string",
+              "required": false
+            },
+            "callback": {
+              "name": "string",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nRemove an event listener.\nThe function you supply has to be the exact same as the one you used in the on function.\nIf no function is supplied, all listeners will be removed.\nLook at the event section of the documentation for more information.\nReturns: None"
+      },
+      "once": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "event_name": {
+              "name": "string",
+              "required": false
+            },
+            "callback": {
+              "name": "string",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nSet an event listener only once. After it has taken place, the event listener will be removed.\nDepending on the type of event you get different parameters for the callback function.\nLook at the event section of the documentation for more information.\nReturns: None"
+      },
+      "canvasToDOM": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "x": {
+              "name": "number",
+              "required": false
+            },
+            "y": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Pass your values into this property and read off the results from the same property.\nThis function converts canvas coordinates to coordinate on the DOM.\nInput and output are in the form of {x:Number,y:Number}.\nThe DOM values are relative to the network container.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "DOMtoCanvas": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "x": {
+              "name": "number",
+              "required": false
+            },
+            "y": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Pass your values into this property and read off the results from the same property.\nThis function converts DOM coordinates to coordinate on the canvas.\nInput and output are in the form of {x:Number,y:Number}.\nThe DOM values are relative to the network container.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "redraw": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nRedraw the network.\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
+      },
+      "setSize": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "width": {
+              "name": "string",
+              "required": false
+            },
+            "height": {
+              "name": "string",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nSet the size of the canvas. This is automatically done on a window resize.\nReturns: None",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "cluster": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "options": {
+              "name": "custom",
+              "raw": "ClusteringOptions",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns nothing.\n\tClusters the network according to the passed in options.\n\tThe options object is explained in full below. The joinCondition function is presented with all nodes.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "clusterByConnection": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "nodeId": {
+              "name": "string",
+              "required": false
+            },
+            "options": {
+              "name": "custom",
+              "raw": "ClusteringOptions",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns nothing.\nThis method looks at the provided node and makes a cluster of it and all it's connected nodes.\nThe behaviour can be customized by proving the options object. All options of this object are explained below.\nThe joinCondition is only presented with the connected nodes.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "clusterByHubsize": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "hubsize": {
+              "name": "number",
+              "required": false
+            },
+            "options": {
+              "name": "custom",
+              "raw": "ClusteringOptions",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns nothing.\nThis method checks all nodes in the network and those with a equal or higher amount of edges than\nspecified with the hubsize qualify. If a hubsize is not defined, the hubsize will be determined\nas the average value plus two standard deviations.\n\nFor all qualifying nodes, clusterByHubsize is performed on each of them.\nThe options object is described for clusterByHubsize and does the same here."
+      },
+      "clusterOutliers": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "options": {
+              "name": "custom",
+              "raw": "ClusteringOptions",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns nothing.\n This method will cluster all nodes with 1 edge with their respective connected node.\n The options object is explained in full below."
+      },
+      "findNode": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeId": {
+              "name": "union",
+              "value": [
+                {
+                  "name": "string"
+                },
+                {
+                  "name": "number"
+                }
+              ],
+              "required": false
+            },
+            "result": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns array of node ids showing in which clusters the desired node id exists in (if any).\n Nodes can be in clusters. Clusters can also be in clusters.\n This function returns and array of nodeIds showing where the node is.\nIf any nodeId in the chain, especially the first passed in as a parameter,\nis not present in the current nodes list, an empty array is returned.\n\nExample: cluster 'A' contains cluster 'B', cluster 'B' contains cluster 'C', cluster 'C' contains node 'fred'.\nnetwork.clustering.findNode('fred') will return ['A','B','C','fred']."
+      },
+      "getClusteredEdges": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "baseEdgeId": {
+              "name": "string",
+              "required": false
+            },
+            "result": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nSimilar to findNode in that it returns all the edge ids that were\ncreated from the provided edge during clustering.\nCheck the result property for results of this function call."
+      },
+      "getBaseEdges": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "clusteredEdgeId": {
+              "name": "string",
+              "required": false
+            },
+            "result": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nFor the given clusteredEdgeId, this method will return all the original base edge id's provided in data.edges.\nFor a non-clustered (i.e. 'base') edge, clusteredEdgeId is returned.\n\nOnly the base edge id's are returned. All clustered edges id's under clusteredEdgeId are skipped,\nbut scanned recursively to return their base id's."
+      },
+      "updateEdge": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "startEdgeId": {
+              "name": "string",
+              "required": false
+            },
+            "options": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns nothing.\nVisible edges between clustered nodes are not the same edge as the ones provided in data.edges passed on network creation\nWith each layer of clustering, copies of the edges between clusters are created and the previous edges are hidden, until the cluster is opened.\nThis method takes an edgeId (ie. a base edgeId from data.edges) and applies the options to it and any edges that were created from it while clustering.\n\nExample: network.clustering.updateEdge(originalEdge.id, {color : '#aa0000'});\nThis would turn the base edge and any subsequent edges red, so when opening clusters the edges will all be the same color."
+      },
+      "updateClusteredNode": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "clusteredNodeId": {
+              "name": "string",
+              "required": false
+            },
+            "options": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns nothing.\nVisible edges between clustered nodes are not the same edge as the ones provided in data.edges passed on network creation\nWith each layer of clustering, copies of the edges between clusters are created and the previous edges are hidden, until the cluster is opened.\nThis method takes an edgeId (ie. a base edgeId from data.edges) and applies the options to it and any edges that were created from it while clustering.\n\nExample: network.clustering.updateEdge(originalEdge.id, {color : '#aa0000'});\nThis would turn the base edge and any subsequent edges red, so when opening clusters the edges will all be the same color."
+      },
+      "isCluster": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeId": {
+              "name": "string",
+              "required": false
+            },
+            "result": {
+              "name": "bool",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns true if the node whose ID has been supplied is a cluster."
+      },
+      "getNodesInCluster": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "clusteredNodeId": {
+              "name": "string",
+              "required": false
+            },
+            "result": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns an array of all nodeIds of the nodes that would be released if you open the cluster."
+      },
+      "openCluster": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeId": {
+              "name": "string",
+              "required": false
+            },
+            "options": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nOpens the cluster, releases the contained nodes and edges, removing the cluster node and cluster edges.\nThe options object is optional and currently supports one option, releaseFunction, which is a function that can be used to manually position the nodes after the cluster is opened.\nfunction releaseFunction (clusterPosition, containedNodesPositions) {\n    var newPositions = {};\n    // clusterPosition = {x:clusterX, y:clusterY};\n    // containedNodesPositions = {nodeId:{x:nodeX,y:nodeY}, nodeId2....}\n    newPositions[nodeId] = {x:newPosX, y:newPosY};\n    return newPositions;\n}\nThe containedNodesPositions contain the positions of the nodes in the cluster at the moment they were clustered.\nThis function is expected to return the newPositions, which can be the containedNodesPositions (altered) or\na new object. This has to be an object with keys equal to the nodeIds that exist in the containedNodesPositions\nand an {x:x,y:y} position object.\n\nFor all nodeIds not listed in this returned object, we will position them at the location of the cluster.\nThis is also the default behaviour when no releaseFunction is defined."
+      },
+      "getSeed": {
+        "type": {
+          "name": "union",
+          "value": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "number"
+            }
+          ]
+        },
+        "required": false,
+        "description": "Read-only prop.\nIf you like the layout of your network and would like it to start in the same way next time, ask for the seed using this method and put it in the layout.randomSeed option."
+      },
+      "enableEditMode": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nProgrammatically enable the edit mode. Similar effect to pressing the edit button.\nReturns: None"
+      },
+      "disableEditMode": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nProgrammatically disable the edit mode. Similar effect to pressing the close icon (small cross in the corner of the toolbar).\nReturns: None"
+      },
+      "addNodeMode": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into addNode mode. Having edit mode or manipulation enabled is not required.\nTo get out of this mode, call disableEditMode().\nThe callback functions defined in handlerFunctions still apply.\nTo use these methods without having the manipulation GUI, make sure you set enabled to false.\nReturns: None"
+      },
+      "editNode": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nEdit the selected node. The explanation from addNodeMode applies here as well.\nReturns: None"
+      },
+      "addEdgeMode": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into addEdge mode. The explanation from addNodeMode applies here as well.\nReturns: None"
+      },
+      "editEdgeMode": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into editEdge mode. The explanation from addNodeMode applies here as well.\nReturns: None"
+      },
+      "deleteSelected": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nDelete selected. Having edit mode or manipulation enabled is not required.\nReturns: None"
+      },
+      "getPositions": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeIds": {
+              "name": "array",
+              "required": false
+            },
+            "result": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nReturns the x y positions in canvas space of the nodes or node with the supplied nodeIds or nodeId as an object:\n// All nodes in the network.\nnetwork.getPositions();\n>   {\n        a123: { x: 5, y: 12 },\n        b456: { x: 3, y: 4 },\n        c789: { x: 7, y: 10 }\n    }\n\n\n// Specific nodes.\nnetwork.getPositions(['a123', 'b456']);\n>   {\n        a123: { x: 5, y: 12 },\n        b456: { x: 3, y: 4 },\n    }\n\n\n// A single node.\nnetwork.getPositions('a123');\n>   {\n        a123: { x: 5, y: 12 }\n    }\n\n\nAlternative inputs are a string containing a nodeId or nothing. When a string is supplied, the position of the node corresponding to the id is returned in the same format. When nothing is supplied, the positions of all nodes are returned.\nNote: If a non-existent id is supplied, the method will return an empty object."
+      },
+      "getPosition": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeId": {
+              "name": "string",
+              "required": false
+            },
+            "result": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nReturns the x y positions in canvas space of a specific node.\nnetwork.getPosition('a123');\n>   { x: 5, y: 12 }\n\nIf no id is provided, the method will throw a TypeError\nIf an id is provided that does not correspond to a node in the network, the method will throw a ReferenceError."
+      },
+      "storePositions": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nWhen using the vis.DataSet to load your nodes into the network, this method will put the X and Y positions of all nodes into that dataset. If you're loading your nodes from a database and have this dynamically coupled with the DataSet, you can use this to stabilize your network once, then save the positions in that database through the DataSet so the next time you load the nodes, stabilization will be near instantaneous.\n\nIf the nodes are still moving and you're using dynamic smooth edges (which is on by default), you can use the option stabilization.onlyDynamicEdges in the physics module to improve initialization time.\n\nThis method does not support clustering. At the moment it is not possible to cache positions when using clusters since they cannot be correctly initialized from just the positions.\n moveNode(nodeId, Number x, Number y)\n getBoundingBox(String nodeId)\n getConnectedNodes(String nodeId or edgeId, [String direction])\n getConnectedEdges(String nodeId)\nReturns: None"
+      },
+      "moveNode": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeId": {
+              "name": "string",
+              "required": false
+            },
+            "x": {
+              "name": "number",
+              "required": false
+            },
+            "y": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nYou can use this to programmatically move a node. The supplied x and y positions have to be in canvas space!"
+      },
+      "getBoundingBox": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeId": {
+              "name": "string",
+              "required": false
+            },
+            "result": {
+              "name": "object",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nReturns a bounding box for the node including label in the format:\n{\n  top: Number,\n  left: Number,\n  right: Number,\n  bottom: Number\n}\nThese values are in canvas space."
+      },
+      "getConnectedNodes": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "id": {
+              "name": "string",
+              "required": false
+            },
+            "direction": {
+              "name": "string",
+              "required": false
+            },
+            "result": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nReturns an array of nodeIds of all the nodes that are directly connected to this node or edge.\n\nFor a node id, returns an array with the id's of the connected nodes.\nIf optional parameter direction is set to string 'from', only parent nodes are returned.\nIf direction is set to 'to', only child nodes are returned.\nAny other value or undefined returns both parent and child nodes.\n\nFor an edge id, returns an array: [fromId, toId]. Parameter direction is ignored for edges."
+      },
+      "getConnectedEdges": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeId": {
+              "name": "string",
+              "required": false
+            },
+            "result": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nReturns an array of edgeIds of the edges connected to this node."
+      },
+      "startSimulation": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Function call.\nStart the physics simulation. This is normally done whenever needed and is only really useful\nif you stop the simulation yourself and wish to continue it afterwards."
+      },
+      "stopSimulation": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Function call.\nReturns a bounding box for the node including label in the format:\n{\n  top: Number,\n  left: Number,\n  right: Number,\n  bottom: Number\n}\nThese values are in canvas space."
+      },
+      "stabilize": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Function call.\nYou can manually call stabilize at any time. All the stabilization options above are used.\nYou can optionally supply the number of iterations it should do."
+      },
+      "getSelection": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only property.\nReturns an object with selected nodes and edges ids like this:\n{\n  nodes: [Array of selected nodeIds],\n  edges: [Array of selected edgeIds]\n}"
+      },
+      "getSelectedNodes": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "number"
+          }
+        },
+        "required": false,
+        "description": "Read-only property.\nReturns an array of selected node ids like so: [nodeId1, nodeId2, ..]."
+      },
+      "getSelectedEdges": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "string"
+          }
+        },
+        "required": false,
+        "description": "Read-only property.\nReturns an array of selected edge ids like so: [edgeId1, edgeId2, ..]."
+      },
+      "getNodeAt": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "position": {
+              "name": "exact",
+              "value": {
+                "x": {
+                  "name": "number",
+                  "required": false
+                },
+                "y": {
+                  "name": "number",
+                  "required": false
+                }
+              },
+              "required": false
+            },
+            "result": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nReturns a nodeId or undefined.\nThe DOM positions are expected to be in pixels from the top left corner of the canvas."
+      },
+      "getEdgeAt": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "position": {
+              "name": "exact",
+              "value": {
+                "x": {
+                  "name": "number",
+                  "required": false
+                },
+                "y": {
+                  "name": "number",
+                  "required": false
+                }
+              },
+              "required": false
+            },
+            "result": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nReturns an edgeId or undefined.\nThe DOM positions are expected to be in pixels from the top left corner of the canvas."
+      },
+      "selectNodes": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeIds": {
+              "name": "array",
+              "required": false
+            },
+            "highlightEdges": {
+              "name": "bool",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nSelects the nodes corresponding to the id's in the input array.\nIf highlightEdges is true or undefined, the neighbouring edges will also be selected.\nThis method unselects all other objects before selecting its own objects.\nDoes not fire events."
+      },
+      "selectEdges": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "edgeIds": {
+              "name": "array",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nSelects the edges corresponding to the id's in the input array.\nThis method unselects all other objects before selecting its own objects.\nDoes not fire events."
+      },
+      "setSelection": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "selection": {
+              "name": "exact",
+              "value": {
+                "nodes": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "string"
+                  },
+                  "required": false
+                },
+                "edges": {
+                  "name": "arrayOf",
+                  "value": {
+                    "name": "string"
+                  },
+                  "required": false
+                }
+              },
+              "required": false
+            },
+            "options": {
+              "name": "shape",
+              "value": {
+                "unselectAll": {
+                  "name": "bool",
+                  "required": false
+                },
+                "highlightEdges": {
+                  "name": "bool",
+                  "required": false
+                }
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nSets the selection, wich must be an object like this:\n{\n  nodes: [Array of nodeIds],\n  edges: [Array of edgeIds]\n}\nYou can also pass only nodes or edges in selection object. Available options are:\n{\n  unselectAll: Boolean,\n  highlightEdges: Boolean\n}"
+      },
+      "unselectAll": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Function call.\nUnselect all objects. Does not fire events."
+      },
+      "getScale": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Read-only property.\nReturns the current scale of the network.\n1.0 is comparable to 100%, 0 is zoomed out infinitely."
+      },
+      "getViewPosition": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "x": {
+              "name": "number",
+              "required": false
+            },
+            "y": {
+              "name": "number",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Read-only property.\nReturns the current central focus point of the view in the form: { x: {Number}, y: {Number} }"
+      },
+      "focus": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "nodeId": {
+              "name": "string",
+              "required": false
+            },
+            "options": {
+              "name": "custom",
+              "raw": "FocusOptions",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nYou can focus on a node with this function. What that means is the view will lock onto that node,\nif it is moving, the view will also move accordingly. If the view is dragged by the user, the focus is broken.\nYou can supply options to customize the effect:\n{\n  scale: Number,\n  offset: {x:Number, y:Number}\n  locked: boolean\n  animation: { // -------------------> can be a boolean too!\n    duration: Number\n    easingFunction: String\n  }\n}\nAll options except for locked are explained in the moveTo() description below.\nLocked denotes whether or not the view remains locked to the node once the zoom-in animation is finished.\nDefault value is true. The options object is optional in the focus method."
+      },
+      "moveTo": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "options": {
+              "name": "custom",
+              "raw": "MoveToOptions",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call.\nYou can animate or move the camera using the moveTo method. Options are:\n{\n  position: {x:Number, y:Number},\n  scale: Number,\n  offset: {x:Number, y:Number}\n  animation: { // -------------------> can be a boolean too!\n    duration: Number\n    easingFunction: String\n  }\n}\nThe position (in canvas units!) is the position of the central focus point of the camera.\nThe scale is the target zoomlevel. Default value is 1.0. The offset (in DOM units) is how many pixels from the\ncenter the view is focussed. Default value is {x:0,y:0}. For animation you can either use a Boolean to use it\nwith the default options or disable it or you can define the duration (in milliseconds) and easing function\nmanually. Available are: linear, easeInQuad, easeOutQuad, easeInOutQuad, easeInCubic, easeOutCubic,\neaseInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, easeInQuint, easeOutQuint, easeInOutQuint.\nYou will have to define at least a scale, position or offset. Otherwise, there is nothing to move to."
+      },
+      "releaseNode": {
+        "type": {
+          "name": "bool"
+        },
+        "required": false,
+        "description": "Function call.\nProgrammatically release the focussed node."
+      },
+      "getOptionsFromConfigurator": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Function call.\nIf you use the configurator, you can call this method to get an options object that contains all differences\nfrom the default options caused by users interacting with the configurator."
+      },
+      "setProps": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Dash-assigned callback that should be called to report property changes\nto Dash, to make them available for callbacks."
+      }
+    }
+  }
+}

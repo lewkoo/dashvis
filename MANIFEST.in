@@ -1,0 +1,11 @@
+include dashvis/dashvis.min.js
+include dashvis/dashvis.min.js.map
+include dashvis/async-*.js
+include dashvis/async-*.js.map
+include dashvis/*-shared.js
+include dashvis/*-shared.js.map
+include dashvis/metadata.json
+include dashvis/package-info.json
+include README.md
+include LICENSE
+include package.json

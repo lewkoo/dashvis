@@ -18,13 +18,13 @@ export const FocusOptions = PropTypes.shape({
         y: PropTypes.number
     }),
     locked: PropTypes.bool,
-    animation: PropTypes.oneOfType(
+    animation: PropTypes.oneOfType([
         PropTypes.bool,
         PropTypes.shape({
             duration: PropTypes.number,
             easingFunction: PropTypes.string
         })
-    )
+    ])
 });
 export const MoveToOptions = PropTypes.shape({
     position: PropTypes.shape({
@@ -36,17 +36,24 @@ export const MoveToOptions = PropTypes.shape({
         x: PropTypes.number,
         y: PropTypes.number
     }),
-    animation: PropTypes.oneOfType(
+    animation: PropTypes.oneOfType([
         PropTypes.bool,
         PropTypes.shape({
             duration: PropTypes.number,
             easingFunction: PropTypes.string
         })
-    )
+    ])
 });
 
+function withoutProperties(obj, props) {
+    const { [props]: unused, ...rest } = obj;
+    return rest
+}
+
 /**
- * TODO: Write this up
+ * A full implementation of [vis.js](https://visjs.github.io/vis-network/docs/network/)
+ * Network component for Dash Plotly.
+ * Useful for displaying dynamic, automatically organised, customizable network views.
  */
 export default class DashNetwork extends Component {
 
@@ -135,6 +142,7 @@ export default class DashNetwork extends Component {
         const gd = document.getElementById(id);
         this.nodes.add(data.nodes)
         this.edges.add(data.edges)
+
         this.net = new Network(gd, {nodes: this.nodes, edges: this.edges}, this.prepareOptions(options))
         this.registerGroupCallbacks(enableHciEvents, hci_events, setProps);
         this.registerGroupCallbacks(enablePhysicsEvents, physics_events, setProps);
@@ -155,14 +163,30 @@ export default class DashNetwork extends Component {
         if(group_events && group_events.length > 0){
             group_events = group_events.filter(e => all_events.includes(e))
         }
-        // Register HCI Events Callbacks
+        // Register Grouped Events Callbacks
         this.registerCallbacks(group_events, setProps);
     }
 
-    registerCallbacks(enableHciEvents, setProps) {
-        for (let i = 0; i < enableHciEvents.length; i++) {
-            const event_name = enableHciEvents[i];
+    registerCallbacks(group_events, setProps) {
+        for (let i = 0; i < group_events.length; i++) {
+            const event_name = group_events[i];
             this.net.addEventListener(event_name, function (params) {
+                // deselectNode and deselectEdge have circular references which need to be removed first before serialization can proceed
+                if (event_name === 'deselectNode' || event_name === 'deselectEdge') {
+
+                   params['previousSelection']['edges'] = params['previousSelection']['edges'].map(edge => {
+                       return {
+                            id: edge.id,
+                       };
+                   });
+
+                   params['previousSelection']['nodes'] = params['previousSelection']['nodes'].map(node => {
+                       return {
+                            id: node.id,
+                       };
+                   });
+                }
+
                 if (setProps) {
                     setProps({[event_name]: params})
                 }
@@ -203,23 +227,25 @@ export default class DashNetwork extends Component {
         const {setProps} = this.props;
 
         if (this.props.data !== nextProps.data) {
-            const new_id_nodes = nextProps.data.nodes.map(function (x) {
+            const new_id_nodes = this.props.data.nodes.map(function (x) {
                 return x.id
             })
             const remove_aim_nodes = this.nodes.getIds().filter(function (x) {
                 return new_id_nodes.indexOf(x) === -1
             })
             this.nodes.remove(remove_aim_nodes)
-            this.nodes.update(nextProps.data.nodes)
+            this.nodes.update(this.props.data.nodes)
 
-            const new_id_edges = nextProps.data.edges.map(function (x) {
+            const new_id_edges = this.props.data.edges.map(function (x) {
                 return x.id
             })
             const remove_aim_edges = this.edges.getIds().filter(function (x) {
                 return new_id_edges.indexOf(x) === -1
             })
             this.edges.remove(remove_aim_edges)
-            this.edges.update(nextProps.data.edges)
+            this.edges.update(this.props.data.edges)
+
+            setProps({ data: this.props.data })
         }
 
         if (this.props.options !== nextProps.options) {
@@ -449,25 +475,33 @@ export default class DashNetwork extends Component {
         }
 
         // Handle methods to get information on nodes and edges
-        // Handle getPositions function call
+        // Handle getPositions function calls
         if (nextProps.getPositions !== this.props.getPositions){
-            try {
-                const positions = this.net.getPositions(this.props.getPositions.nodeIds);
-                setProps( { getPositions: { nodeIds: this.props.getPositions.nodeIds,
-                        result: positions } } );
-            } catch (exception) {
-                console.log("Error: failed to get positions");
+            if(this.props.getPositions !== null) {
+                try {
+                    const positions = this.net.getPositions(this.props.getPositions.nodeIds);
+                    setProps({
+                        getPositions: {
+                            nodeIds: this.props.getPositions.nodeIds,
+                            result: positions
+                        }
+                    });
+                } catch (exception) {
+                    console.log("Error: failed to get positions");
+                }
             }
         }
 
         // Handle getPosition function call
         if (nextProps.getPosition !== this.props.getPosition){
-            try {
-                const position = this.net.getPosition(this.props.getPosition.nodeId);
-                setProps( { getPosition: { nodeId: this.props.getPosition.nodeId,
-                        result: position } } );
-            } catch (exception) {
-                console.log("Error: failed to get node position");
+            if(this.props.getPosition !== null) {
+                try {
+                    const position = this.net.getPosition(this.props.getPosition.nodeId);
+                    setProps( { getPosition: { nodeId: this.props.getPosition.nodeId,
+                            result: position } } );
+                } catch (exception) {
+                    console.log("Error: failed to get node position");
+                }
             }
         }
 
@@ -478,48 +512,72 @@ export default class DashNetwork extends Component {
 
         // Handle moveNode function call
         if (nextProps.moveNode !== this.props.moveNode){
-            try {
-                this.net.moveNode(this.props.moveNode.nodeId,
-                    this.props.moveNode.x, this.props.moveNode.y);
-                setProps( { moveNode: { nodeId: this.props.moveNode.nodeId,
-                        x: this.props.moveNode.x, y: this.props.moveNode.y } } );
-            } catch (exception) {
-                console.log("Error: failed to move node");
+            if(this.props.moveNode !== null) {
+                try {
+                    this.net.moveNode(this.props.moveNode.nodeId,
+                        this.props.moveNode.x, this.props.moveNode.y);
+                    setProps({
+                        moveNode: {
+                            nodeId: this.props.moveNode.nodeId,
+                            x: this.props.moveNode.x, y: this.props.moveNode.y
+                        }
+                    });
+                } catch (exception) {
+                    console.log("Error: failed to move node");
+                }
             }
         }
 
         // Handle getBoundingBox function call
         if (nextProps.getBoundingBox !== this.props.getBoundingBox){
-            try {
-                const boundingBox = this.net.getBoundingBox(this.props.getBoundingBox.nodeId);
-                setProps( { getBoundingBox: { nodeId: this.props.getBoundingBox.nodeId,
-                        result: boundingBox } } );
-            } catch (exception) {
-                console.log("Error: failed to get the bounding box");
+            if(this.props.getBoundingBox !== null) {
+                try {
+                    const boundingBox = this.net.getBoundingBox(this.props.getBoundingBox.nodeId);
+                    setProps({
+                        getBoundingBox: {
+                            nodeId: this.props.getBoundingBox.nodeId,
+                            result: boundingBox
+                        }
+                    });
+                } catch (exception) {
+                    console.log("Error: failed to get the bounding box");
+                }
             }
         }
 
         // Handle getConnectedNodes function call
         if (nextProps.getConnectedNodes !== this.props.getConnectedNodes){
-            try {
-                const connectedNodes = this.net.getConnectedNodes(this.props.getConnectedNodes.id,
-                    this.props.getConnectedNodes.direction);
-                setProps( { getConnectedNodes: { id: this.props.getConnectedNodes.nodeId,
-                        direction: this.props.getConnectedNodes.direction,
-                        result: connectedNodes } } );
-            } catch (exception) {
-                console.log("Error: failed to get the connected nodes");
+            if(this.props.getConnectedNodes !== null) {
+                try {
+                    const connectedNodes = this.net.getConnectedNodes(this.props.getConnectedNodes.nodeId,
+                        this.props.getConnectedNodes.direction);
+                    setProps({
+                        getConnectedNodes: {
+                            nodeId: this.props.getConnectedNodes.nodeId,
+                            direction: this.props.getConnectedNodes.direction,
+                            result: connectedNodes
+                        }
+                    });
+                } catch (exception) {
+                    console.log("Error: failed to get the connected nodes");
+                }
             }
         }
 
         // Handle getConnectedEdges function call
         if (nextProps.getConnectedEdges !== this.props.getConnectedEdges){
-            try {
-                const connectedEdges = this.net.getConnectedEdges(this.props.getConnectedEdges.nodeId);
-                setProps( { getConnectedEdges: { id: this.props.getConnectedEdges.nodeId,
-                        result: connectedEdges } } );
-            } catch (exception) {
-                console.log("Error: failed to get the connected edges");
+            if(this.props.getConnectedEdges !== null) {
+                try {
+                    const connectedEdges = this.net.getConnectedEdges(this.props.getConnectedEdges.nodeId);
+                    setProps({
+                        getConnectedEdges: {
+                            nodeId: this.props.getConnectedEdges.nodeId,
+                            result: connectedEdges
+                        }
+                    });
+                } catch (exception) {
+                    console.log("Error: failed to get the connected edges");
+                }
             }
         }
 
@@ -534,11 +592,13 @@ export default class DashNetwork extends Component {
 
         // Handle stabilize function call
         if (nextProps.stabilize !== this.props.stabilize){
-            try {
-                this.net.stabilize(this.props.stabilize);
-                setProps( { stabilize: this.props.stabilize } );
-            } catch (exception) {
-                console.log("Error: failed to stabilize network");
+            if (this.props.stabilize !== null) {
+                try {
+                    this.net.stabilize(this.props.stabilize);
+                    setProps({stabilize: this.props.stabilize});
+                } catch (exception) {
+                    console.log("Error: failed to stabilize network");
+                }
             }
         }
 
@@ -560,6 +620,7 @@ export default class DashNetwork extends Component {
         // Handle getNodeAt function call
         if (nextProps.getNodeAt !== this.props.getNodeAt){
             try {
+                console.log(this.props.getNodeAt);
                 const node_at = this.net.getNodeAt(this.props.getNodeAt.position.x,
                     this.props.getNodeAt.position.y);
                 setProps( { getNodeAt: { id: this.props.getNodeAt.position,
@@ -583,33 +644,40 @@ export default class DashNetwork extends Component {
 
         // Handle selectNodes function call
         if (nextProps.selectNodes !== this.props.selectNodes){
-            try {
-                this.net.selectNodes(this.props.selectNodes.nodeIds,
-                    this.props.selectNodes.highlightEdges);
-                setProps( { selectNodes: this.props.selectNodes } );
-            } catch (exception) {
-                console.log("Error: failed to select nodes");
+            if(this.props.selectNodes !== null) {
+                try {
+                    this.net.selectNodes(this.props.selectNodes.nodeIds,
+                        this.props.selectNodes.highlightEdges);
+                    setProps({selectNodes: this.props.selectNodes});
+                } catch (exception) {
+                    console.log("Error: failed to select nodes");
+                }
             }
         }
 
         // Handle selectEdges function call
         if (nextProps.selectEdges !== this.props.selectEdges){
-            try {
-                this.net.selectEdges(this.props.selectEdges.nodeIds);
-                setProps( { selectEdges: this.props.selectEdges } );
-            } catch (exception) {
-                console.log("Error: failed to select edges");
+            if (this.props.selectEdges !== null) {
+                try {
+                    this.net.selectEdges(this.props.selectEdges.nodeIds);
+                    setProps({selectEdges: this.props.selectEdges});
+                } catch (exception) {
+                    console.log("Error: failed to select edges");
+                }
             }
         }
 
         // Handle setSelection function call
         if (nextProps.setSelection !== this.props.setSelection){
-            try {
-                this.net.setSelection(this.props.setSelection.selection,
-                    this.props.setSelection.options);
-                setProps( { setSelection: this.props.setSelection } );
-            } catch (exception) {
-                console.log("Error: failed to select edges");
+            if (this.props.setSelection !== null) {
+                try {
+                    this.net.setSelection(this.props.setSelection.selection,
+                        this.props.setSelection.options);
+                    setProps({setSelection: this.props.setSelection});
+
+                } catch (exception) {
+                    console.log("Error: failed to set selection");
+                }
             }
         }
 
@@ -636,6 +704,7 @@ export default class DashNetwork extends Component {
                 setProps( { focus: this.props.focus } );
             } catch (exception) {
                 console.log("Error: failed to focus on node");
+                console.log(exception);
             }
         }
 
@@ -663,9 +732,6 @@ export default class DashNetwork extends Component {
 
     render() {
         const {id, style} = this.props;
-
-        // console.log("Network seed: " + this.net.getSeed());
-        // setProps(this.props.getSeed, this.net.getSeed());
 
         return (
             <div id={id} style={style}></div>
@@ -815,14 +881,14 @@ DashNetwork.propTypes = {
      *   }
      * }
      */
-    // deselectNode: PropTypes.object,
+    deselectNode: PropTypes.object,
 
     /**
      * Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.
      * Fired when an edge (or edges) has (or have) been deselected by the user.
      * The previous selection is the list of nodes and edges that were selected before the last user event.
      */
-    // deselectEdge: PropTypes.object,
+    deselectEdge: PropTypes.object,
 
     /**
      * Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.
@@ -1388,9 +1454,9 @@ DashNetwork.propTypes = {
      *
      * For an edge id, returns an array: [fromId, toId]. Parameter direction is ignored for edges. */
     getConnectedNodes: PropTypes.shape({
-        id: PropTypes.string,
+        nodeId: PropTypes.string,
         direction: PropTypes.string,
-        result: PropTypes.arrayOf(PropTypes.string),
+        result: PropTypes.arrayOf(PropTypes.number),
     }),
 
     /** Function call.
@@ -1433,11 +1499,11 @@ DashNetwork.propTypes = {
 
     /** Read-only property.
      * Returns an array of selected node ids like so: [nodeId1, nodeId2, ..]. */
-    getSelectedNodes: PropTypes.arrayOf(PropTypes.number),
+    getSelectedNodes: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
 
     /** Read-only property.
      * Returns an array of selected edge ids like so: [edgeId1, edgeId2, ..]. */
-    getSelectedEdges: PropTypes.arrayOf(PropTypes.string),
+    getSelectedEdges: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
 
     /** Function call.
      * Returns a nodeId or undefined.
@@ -1606,5 +1672,14 @@ DashNetwork.defaultProps = {
     DOMtoCanvas: null,
     cluster: null,
     clusterByConnection: null,
-    setSize: {}
+    setSize: {},
+    getPosition: null,
+    getPositions: null,
+    getBoundingBox: null,
+    getConnectedEdges: null,
+    getConnectedNodes: null,
+    moveNode: null,
+    startSimulation: null,
+    stopSimulation: null,
+    stabilize: null,
 };

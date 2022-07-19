@@ -39,22 +39,16 @@ setup(
     classifiers=[
         # see https://pypi.org/classifiers/
         'Development Status :: 1 - Planning',
-        
         'Environment :: Web Environment',
-        
         'Framework :: Dash',
-
         'Intended Audience :: Developers',        
         'License :: OSI Approved :: Apache Software License',
         'License :: OSI Approved :: MIT License',
-        
         'Topic :: Software Development :: Build Tools',
-
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3 :: Only',
-        
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.8',

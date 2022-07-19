@@ -1,4 +1,4 @@
-<p align="center">
+<p style="text-align: center">
   <a href="https://github.com/lewkoo/dashvis">
     <img src="https://github.com/lewkoo/dashvis/blob/main/readme_images/DashVis_Logo.png?raw=true" alt="vis.js logo" width="500" height="200">
   </a>
@@ -6,7 +6,7 @@
 
 <h3 align="center">DashVis Component</h3>
 
-<p align="center">
+<p style="text-align: center">
   Full implementation of vis.js network framework for Plotly Dash
   <br>
   <a href="https://visjs.github.io/vis-network/docs/network/">Explore the documentation</a>
@@ -18,6 +18,7 @@
   <br>
   <img alt="GitHub Actions" src="https://github.com/facultyai/dash-bootstrap-components/workflows/Tests/badge.svg?branch=main">
   <img alt="GitHub" src="https://img.shields.io/github/license/lewkoo/dashvis">
+  <img alt="npm" src="https://img.shields.io/npm/v/dashvis">
   <img alt="PyPI" src="https://img.shields.io/pypi/v/dashvis">
   <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/dashvis">
 </p>
@@ -50,6 +51,7 @@ _dashvis_ exposes a single component, _DashNetwork_. Simply create one and inclu
 
 ```python
 import dash
+from dash import html
 from dashvis import DashNetwork
 
 app = dash.Dash()
@@ -63,10 +65,10 @@ if __name__ == '__main__':
 
 ## See how it is used
 
-<!-- # TODO: update usage.py -->
+A simple usage example is provided in `usage.py`.
 
 1. Run: 
-```python
+```shell
 python -m venv dashvis-venv 
 source dashvis-venv/bin/activate 
 pip install -r requirements.txt
@@ -74,16 +76,34 @@ python usage.py
 ```
 2. Visit <http://localhost:8050> in your web browser
 
+## Advanced examples
+
+Examples which cover the entire API of `vis.js` are available in `usage_examples` folder. 
+
+## Linking a stylesheet
+
+dashvis doesn't come with CSS included. 
+If you enable network manipulation or navigation features, you need to include a stylesheet to draw those components of
+the network.
+
+For convenience, links to vis.js stylesheets are included for you and can be used as follows:
+
+import dash
+import dashvis.stylesheets
+
+app = dash.Dash(external_stylesheets=[dashvis.stylesheets.VIS_NETWORK_STYLESHEET])
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Future work 🔨
 
-- [ ] Update `usage.py`
-- [ ] Fix two disabled `vis.js` function calls
+- [x] Update `usage.py`
+- [x] Fix two disabled `vis.js` function calls
+- [ ] Write tests
 - [ ] Add tests and code coverage badges
-- [ ] Update this README
+- [x] Update this README
 
 [dash-homepage]: https://dash.plotly.com/
 [visjs-homepage]: https://visjs.github.io/vis-network/docs/network/

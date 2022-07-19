@@ -1,6 +1,6 @@
 {
   "name": "dashvis",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Dash Plotly implementation of vis.js library",
   "repository": {
     "type": "git",
@@ -18,11 +18,14 @@
     "publish:npm": "npm publish",
     "publish:pypi": "python -m twine upload dist/*",
     "publish:all": "nrm run publish:npm && npm run publish:pypi",
+    "build:devjs": "webpack --mode development",
     "build:js": "webpack --mode production",
     "build:backends": "dash-generate-components ./src/lib/components dashvis -p package-info.json --r-prefix '' --jl-prefix '' --ignore \\.test\\.",
-    "build:backends-activated": "(. venv/bin/activate || venv\\scripts\\activate && npm run build:backends)",
+    "build:backends-activated": "(. dashvis-venv/bin/activate || dashvis-venv\\scripts\\activate && npm run build:backends)",
     "build": "npm run build:js && npm run build:backends",
+    "build:dev": "npm run build:devjs && npm run build:backends",
     "build:activated": "npm run build:js && npm run build:backends-activated",
+    "build:dev:activated": "npm run build:devjs && npm run build:backends-activated",
     "build:python": "python -m build --wheel --sdist",
     "build:all": "npm run build && npm run build:python",
     "build-and-publish": "npm run build:all && npm run publish:all"

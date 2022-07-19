@@ -1,6 +1,6 @@
 {
   "src/lib/components/DashNetwork.react.js": {
-    "description": "TODO: Write this up",
+    "description": "A full implementation of [vis.js](https://visjs.github.io/vis-network/docs/network/)\nNetwork component for Dash Plotly.\nUseful for displaying dynamic, automatically organised, customizable network views.",
     "displayName": "DashNetwork",
     "methods": [
       {
@@ -41,7 +41,7 @@
         "modifiers": [],
         "params": [
           {
-            "name": "enableHciEvents",
+            "name": "group_events",
             "type": null
           },
           {
@@ -206,6 +206,20 @@
         },
         "required": false,
         "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when an edge has been selected by the user."
+      },
+      "deselectNode": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when a node (or nodes) has (or have) been deselected by the user.\nThe previous selection is the list of nodes and edges that were selected before the last user event.\nPasses an object with properties structured as:\n{\n  nodes: [Array of selected nodeIds],\n  edges: [Array of selected edgeIds],\n  event: [Object] original click event,\n  pointer: {\n    DOM: {x:pointer_x, y:pointer_y},\n    canvas: {x:canvas_x, y:canvas_y}\n    }\n  },\n  previousSelection: {\n    nodes: [Array of previously selected nodeIds],\n    edges: [Array of previously selected edgeIds]\n  }\n}"
+      },
+      "deselectEdge": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Read-only prop. To use this, make sure that `enableHciEvents` is set to `True`, or that `enableHciEvents` is a list that contains this event type.\nFired when an edge (or edges) has (or have) been deselected by the user.\nThe previous selection is the list of nodes and edges that were selected before the last user event."
       },
       "dragStart": {
         "type": {
@@ -848,7 +862,11 @@
           }
         },
         "required": false,
-        "description": "Function call.\nReturns the x y positions in canvas space of the nodes or node with the supplied nodeIds or nodeId as an object:\n// All nodes in the network.\nnetwork.getPositions();\n>   {\n        a123: { x: 5, y: 12 },\n        b456: { x: 3, y: 4 },\n        c789: { x: 7, y: 10 }\n    }\n\n\n// Specific nodes.\nnetwork.getPositions(['a123', 'b456']);\n>   {\n        a123: { x: 5, y: 12 },\n        b456: { x: 3, y: 4 },\n    }\n\n\n// A single node.\nnetwork.getPositions('a123');\n>   {\n        a123: { x: 5, y: 12 }\n    }\n\n\nAlternative inputs are a string containing a nodeId or nothing. When a string is supplied, the position of the node corresponding to the id is returned in the same format. When nothing is supplied, the positions of all nodes are returned.\nNote: If a non-existent id is supplied, the method will return an empty object."
+        "description": "Function call.\nReturns the x y positions in canvas space of the nodes or node with the supplied nodeIds or nodeId as an object:\n// All nodes in the network.\nnetwork.getPositions();\n>   {\n        a123: { x: 5, y: 12 },\n        b456: { x: 3, y: 4 },\n        c789: { x: 7, y: 10 }\n    }\n\n\n// Specific nodes.\nnetwork.getPositions(['a123', 'b456']);\n>   {\n        a123: { x: 5, y: 12 },\n        b456: { x: 3, y: 4 },\n    }\n\n\n// A single node.\nnetwork.getPositions('a123');\n>   {\n        a123: { x: 5, y: 12 }\n    }\n\n\nAlternative inputs are a string containing a nodeId or nothing. When a string is supplied, the position of the node corresponding to the id is returned in the same format. When nothing is supplied, the positions of all nodes are returned.\nNote: If a non-existent id is supplied, the method will return an empty object.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "getPosition": {
         "type": {
@@ -865,7 +883,11 @@
           }
         },
         "required": false,
-        "description": "Function call.\nReturns the x y positions in canvas space of a specific node.\nnetwork.getPosition('a123');\n>   { x: 5, y: 12 }\n\nIf no id is provided, the method will throw a TypeError\nIf an id is provided that does not correspond to a node in the network, the method will throw a ReferenceError."
+        "description": "Function call.\nReturns the x y positions in canvas space of a specific node.\nnetwork.getPosition('a123');\n>   { x: 5, y: 12 }\n\nIf no id is provided, the method will throw a TypeError\nIf an id is provided that does not correspond to a node in the network, the method will throw a ReferenceError.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "storePositions": {
         "type": {
@@ -893,7 +915,11 @@
           }
         },
         "required": false,
-        "description": "Function call.\nYou can use this to programmatically move a node. The supplied x and y positions have to be in canvas space!"
+        "description": "Function call.\nYou can use this to programmatically move a node. The supplied x and y positions have to be in canvas space!",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "getBoundingBox": {
         "type": {
@@ -910,13 +936,17 @@
           }
         },
         "required": false,
-        "description": "Function call.\nReturns a bounding box for the node including label in the format:\n{\n  top: Number,\n  left: Number,\n  right: Number,\n  bottom: Number\n}\nThese values are in canvas space."
+        "description": "Function call.\nReturns a bounding box for the node including label in the format:\n{\n  top: Number,\n  left: Number,\n  right: Number,\n  bottom: Number\n}\nThese values are in canvas space.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "getConnectedNodes": {
         "type": {
           "name": "shape",
           "value": {
-            "id": {
+            "nodeId": {
               "name": "string",
               "required": false
             },
@@ -927,14 +957,18 @@
             "result": {
               "name": "arrayOf",
               "value": {
-                "name": "string"
+                "name": "number"
               },
               "required": false
             }
           }
         },
         "required": false,
-        "description": "Function call.\nReturns an array of nodeIds of all the nodes that are directly connected to this node or edge.\n\nFor a node id, returns an array with the id's of the connected nodes.\nIf optional parameter direction is set to string 'from', only parent nodes are returned.\nIf direction is set to 'to', only child nodes are returned.\nAny other value or undefined returns both parent and child nodes.\n\nFor an edge id, returns an array: [fromId, toId]. Parameter direction is ignored for edges."
+        "description": "Function call.\nReturns an array of nodeIds of all the nodes that are directly connected to this node or edge.\n\nFor a node id, returns an array with the id's of the connected nodes.\nIf optional parameter direction is set to string 'from', only parent nodes are returned.\nIf direction is set to 'to', only child nodes are returned.\nAny other value or undefined returns both parent and child nodes.\n\nFor an edge id, returns an array: [fromId, toId]. Parameter direction is ignored for edges.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "getConnectedEdges": {
         "type": {
@@ -954,28 +988,44 @@
           }
         },
         "required": false,
-        "description": "Function call.\nReturns an array of edgeIds of the edges connected to this node."
+        "description": "Function call.\nReturns an array of edgeIds of the edges connected to this node.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "startSimulation": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "Function call.\nStart the physics simulation. This is normally done whenever needed and is only really useful\nif you stop the simulation yourself and wish to continue it afterwards."
+        "description": "Function call.\nStart the physics simulation. This is normally done whenever needed and is only really useful\nif you stop the simulation yourself and wish to continue it afterwards.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "stopSimulation": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "Function call.\nReturns a bounding box for the node including label in the format:\n{\n  top: Number,\n  left: Number,\n  right: Number,\n  bottom: Number\n}\nThese values are in canvas space."
+        "description": "Function call.\nReturns a bounding box for the node including label in the format:\n{\n  top: Number,\n  left: Number,\n  right: Number,\n  bottom: Number\n}\nThese values are in canvas space.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "stabilize": {
         "type": {
           "name": "number"
         },
         "required": false,
-        "description": "Function call.\nYou can manually call stabilize at any time. All the stabilization options above are used.\nYou can optionally supply the number of iterations it should do."
+        "description": "Function call.\nYou can manually call stabilize at any time. All the stabilization options above are used.\nYou can optionally supply the number of iterations it should do.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
       },
       "getSelection": {
         "type": {
@@ -988,7 +1038,15 @@
         "type": {
           "name": "arrayOf",
           "value": {
-            "name": "number"
+            "name": "union",
+            "value": [
+              {
+                "name": "string"
+              },
+              {
+                "name": "number"
+              }
+            ]
           }
         },
         "required": false,
@@ -998,7 +1056,15 @@
         "type": {
           "name": "arrayOf",
           "value": {
-            "name": "string"
+            "name": "union",
+            "value": [
+              {
+                "name": "string"
+              },
+              {
+                "name": "number"
+              }
+            ]
           }
         },
         "required": false,

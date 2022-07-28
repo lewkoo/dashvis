@@ -1,4 +1,4 @@
-<p style="text-align: center">
+<p align="center">
   <a href="https://github.com/lewkoo/dashvis">
     <img src="https://github.com/lewkoo/dashvis/blob/main/readme_images/DashVis_Logo.png?raw=true" alt="vis.js logo" width="500" height="200">
   </a>
@@ -6,7 +6,7 @@
 
 <h3 align="center">DashVis Component</h3>
 
-<p style="text-align: center">
+<p align="center">
   Full implementation of vis.js network framework for Plotly Dash
   <br>
   <a href="https://visjs.github.io/vis-network/docs/network/">Explore the documentation</a>
@@ -32,6 +32,8 @@ A full implementation of [vis.js][visjs-homepage] Network component for [Dash Pl
   - [PyPI](#pypi)
 - [Quick start](#quick-start)
 - [See how it is used](#see-how-it-is-used)
+- [Advanced examples](#advanced-examples)
+- [Linking a stylesheet](#linking-a-stylesheet)
 - [Contributing](#contributing)
 - [Future work 🔨](#future-work-)
 
@@ -88,10 +90,12 @@ the network.
 
 For convenience, links to vis.js stylesheets are included for you and can be used as follows:
 
+```python
 import dash
 import dashvis.stylesheets
 
 app = dash.Dash(external_stylesheets=[dashvis.stylesheets.VIS_NETWORK_STYLESHEET])
+```
 
 ## Contributing
 

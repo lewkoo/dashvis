@@ -1,6 +1,6 @@
 {
   "name": "dashvis",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Dash Plotly implementation of vis.js library",
   "repository": {
     "type": "git",

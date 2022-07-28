@@ -12,8 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - id: get-version
-        run: echo "::set-output name=version::$(echo ${{ github.head_ref }})"
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@main
 
       - name: Use Node.js 12
         uses: actions/setup-node@v1
@@ -54,14 +55,6 @@ jobs:
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
 
-      - name: Commit updated package-lock.json
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Release ${{ steps.get-version.outputs.version }}
-          branch: main
-          push_options: --force
-          file_pattern: package-lock.json
-
       - name: Create GitHub release
         id: create-release
         if: startsWith(github.ref, 'refs/heads/main')
@@ -69,17 +62,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.get-version.outputs.version }}
-          release_name: Release ${{ steps.get-version.outputs.version }}
-          body: ${{ github.event.pull_request.body }}
+          tag_name: ${{ steps.package-version.outputs.current-version }}
+          release_name: Release ${{ steps.package-version.outputs.current-version }}
+          body: ${{ github.event.head_commit.message }}
           prerelease: false
-
-      # - name: Post-release cleanup
-      #   run: invoke postrelease ${{ steps.get-version.outputs.version }}
-
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Back to dev
-          branch: main
-          push_options: --force
-          file_pattern: package.json

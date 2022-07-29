@@ -74,6 +74,8 @@ A simple usage example is provided in `usage.py`.
 python -m venv dashvis-venv 
 source dashvis-venv/bin/activate 
 pip install -r requirements.txt
+npm install
+npm run build
 python usage.py
 ```
 2. Visit <http://localhost:8050> in your web browser
@@ -81,6 +83,15 @@ python usage.py
 ## Advanced examples
 
 Examples which cover the entire API of `vis.js` are available in `usage_examples` folder. 
+Running them requires PYTHONPATH to be made aware of `dashvis`.
+Simply run:
+```shell
+export PYTHONPATH="${PYTHONPATH}:./dashvis"
+````
+and then run any example from repo root directory of the repository:
+```shell
+python usage_examples/<example_name>.py
+```
 
 ## Linking a stylesheet
 

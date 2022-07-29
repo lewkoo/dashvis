@@ -1,6 +1,6 @@
 {
   "name": "dashvis",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Dash Plotly implementation of vis.js library",
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
     "build:all": "npm run build && npm run build:python",
     "build-and-publish": "npm run build:all && npm run publish:all"
   },
-  "author": "Levko Ivanchuk <lewkoo@gmail.com",
+  "author": "Levko Ivanchuk <lewkoo@gmail.com>",
   "license": "MIT, Apache-2.0",
   "dependencies": {
     "ramda": "^0.26.1",

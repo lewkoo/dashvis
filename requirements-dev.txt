@@ -1,5 +1,6 @@
 # dash is required to call `build:py`
 dash[dev,testing]>=2.0.0
+wheel
 dash-ace
 build
 twine

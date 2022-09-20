@@ -137,6 +137,36 @@ app.layout = html.Div([
         ]),
         html.Button("Move To", id="moveTo_button"),
 
+    ]),
+    html.Div([
+        html.H5("Fit Options: "),
+        html.Div([
+            html.A("Min Zoom Level:"),
+            dcc.Input(id='min_zoom_level', value=0.1, type='number', min=0, max=1, step=0.01),
+        ]),
+        html.Div([
+            html.A("Max Zoom Level:"),
+            dcc.Input(id='max_zoom_level', value=0.8, type='number', min=0, max=1, step=0.01),
+        ]),
+        html.Div([
+            dcc.Checklist(
+                options=[
+                    {'label': 'Animation enabled', 'value': 'enabled'},
+                ],
+                value=[],
+                id='fit_animation_enabled'
+            ),
+            html.A("Duration:"),
+            dcc.Input(id='fit_animation_duration', value=0, type='number'),
+            html.A("Easing function:"),
+            dcc.Dropdown(id='fit_easing_function', options=['linear', 'easeInQuad', 'easeOutQuad', 'easeInOutQuad',
+                                                            'easeInCubic', 'easeOutCubic', 'easeInOutCubic',
+                                                            'easeInQuart',
+                                                            'easeOutQuart', 'easeInOutQuart', 'easeInQuint',
+                                                            'easeOutQuint',
+                                                            'easeInOutQuint'], value='linear'),
+        ]),
+        html.Button("Fit", id="fit_button"),
     ])
 ])
 
@@ -262,6 +292,34 @@ def handle_move_to(n_clicks, scale, x_position, y_position, x_offset, y_offset, 
                 'y': y_offset
             },
             'locked': False if not locked else True,
+            'animation': False if not animation_enabled else {
+                'duration': animation_duration,
+                'easingFunction': easing_function
+            }
+        }
+    }
+
+
+@app.callback(
+    Output('network', 'fit'),
+    Input('fit_button', 'n_clicks'),
+    State('focus_node_id_input', 'value'),
+    State('min_zoom_level', 'value'),
+    State('max_zoom_level', 'value'),
+    State('fit_animation_enabled', 'value'),
+    State('fit_animation_duration', 'value'),
+    State('fit_easing_function', 'value'),
+    prevent_initial_callbacks=True
+)
+def handle_fit(n_clicks, node_id, min_zoom_level, max_zoom_level, animation_enabled, animation_duration, easing_function):
+    if not n_clicks:
+        raise dash.exceptions.PreventUpdate
+
+    return {
+        'options': {
+            'nodes': [node_id] if node_id else [],
+            'minZoomLevel': min_zoom_level,
+            'maxZoomLevel': max_zoom_level,
             'animation': False if not animation_enabled else {
                 'duration': animation_duration,
                 'easingFunction': easing_function

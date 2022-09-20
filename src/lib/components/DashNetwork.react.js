@@ -44,6 +44,21 @@ export const MoveToOptions = PropTypes.shape({
         })
     ])
 });
+export const FitOptions = PropTypes.shape({
+    nodes: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.string),
+        PropTypes.arrayOf(PropTypes.number)
+    ]),
+    minZoomLevel: PropTypes.number,
+    maxZoomLevel: PropTypes.number,
+    animation: PropTypes.oneOfType([
+        PropTypes.bool,
+        PropTypes.shape({
+            duration: PropTypes.number,
+            easingFunction: PropTypes.string
+        })
+    ])
+});
 
 function withoutProperties(obj, props) {
     const { [props]: unused, ...rest } = obj;
@@ -715,6 +730,17 @@ export default class DashNetwork extends Component {
                 setProps( { moveTo: this.props.moveTo } );
             } catch (exception) {
                 console.log("Error: failed to move to on network");
+            }
+        }
+
+        // Handle fit function call
+        if (nextProps.fit !== this.props.fit){
+            try {
+                this.net.fit(this.props.fit.options);
+                setProps( { fit: this.props.fit } );
+            } catch (exception) {
+                console.log("Error: failed to fit the network");
+                console.log(exception);
             }
         }
 
@@ -1629,6 +1655,10 @@ DashNetwork.propTypes = {
      */
     moveTo: PropTypes.shape({
         options: MoveToOptions,
+    }),
+
+    fit: PropTypes.shape({
+        options: FitOptions,
     }),
 
     /** Function call.

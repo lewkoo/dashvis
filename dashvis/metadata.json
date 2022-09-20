@@ -1266,6 +1266,20 @@
         "required": false,
         "description": "Function call.\nYou can animate or move the camera using the moveTo method. Options are:\n{\n  position: {x:Number, y:Number},\n  scale: Number,\n  offset: {x:Number, y:Number}\n  animation: { // -------------------> can be a boolean too!\n    duration: Number\n    easingFunction: String\n  }\n}\nThe position (in canvas units!) is the position of the central focus point of the camera.\nThe scale is the target zoomlevel. Default value is 1.0. The offset (in DOM units) is how many pixels from the\ncenter the view is focussed. Default value is {x:0,y:0}. For animation you can either use a Boolean to use it\nwith the default options or disable it or you can define the duration (in milliseconds) and easing function\nmanually. Available are: linear, easeInQuad, easeOutQuad, easeInOutQuad, easeInCubic, easeOutCubic,\neaseInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, easeInQuint, easeOutQuint, easeInOutQuint.\nYou will have to define at least a scale, position or offset. Otherwise, there is nothing to move to."
       },
+      "fit": {
+        "type": {
+          "name": "shape",
+          "value": {
+            "options": {
+              "name": "custom",
+              "raw": "FitOptions",
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": ""
+      },
       "releaseNode": {
         "type": {
           "name": "bool"

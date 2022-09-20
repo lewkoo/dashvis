@@ -19,8 +19,8 @@ app = dash.Dash(__name__, external_stylesheets=[dashvis.stylesheets.VIS_NETWORK_
 network = DashNetwork(
     id='network',
     style={'height': '400px'},
+    enableHciEvents=['select'],
     options=default_options_,
-    enableHciEvents=False,
     enablePhysicsEvents=False,
     enableOtherEvents=False
 )

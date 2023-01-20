@@ -154,6 +154,19 @@ export default class DashNetwork extends Component {
         }
 
         try {
+           if (typeof(options.nodes.chosen) === 'object') {
+                    if (typeof(options.nodes.chosen.node) === 'string') {
+                        options.nodes.chosen.node = this.convertStringToFunction(options.nodes.chosen.node);
+                    }
+                    if (typeof(options.nodes.chosen.label) === 'string') {
+                        options.nodes.nodes.chosen.label = this.convertStringToFunction(options.nodes.chosen.label);
+                    }
+                }
+        } catch (exception) {
+            console.log("Error: failed to parse input chosen function string");
+        }
+
+        try {
             for (const [key, value] of Object.entries(options.groups)) {
                 if (typeof(value.shape) === 'string' && value.shape.startsWith('custom')) {
                     if (typeof(value.ctxRenderer) === 'string') {
@@ -161,6 +174,16 @@ export default class DashNetwork extends Component {
 
                     }
                 }
+
+                if (typeof(value.chosen) === 'object') {
+                    if (typeof(value.chosen.node) === 'string') {
+                        value.chosen.node = this.convertStringToFunction(value.chosen.node);
+                    }
+                    if (typeof(value.chosen.label) === 'string') {
+                        value.chosen.label = this.convertStringToFunction(value.chosen.label);
+                    }
+                }
+
             }
 
         } catch (exception) {

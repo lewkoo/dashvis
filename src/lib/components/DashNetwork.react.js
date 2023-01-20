@@ -86,15 +86,18 @@ export default class DashNetwork extends Component {
         try {
             if (typeof(options.manipulation.addNode) === 'string') {
                 options.manipulation.addNode = this.convertStringToFunction(options.manipulation.addNode);
+            } else {
+                delete options.manipulation.addNode;
             }
         } catch (exception) {
             console.log("Error: failed to parse input addNode function string");
         }
 
-
         try {
             if (typeof(options.manipulation.addEdge) === 'string') {
                 options.manipulation.addEdge = this.convertStringToFunction(options.manipulation.addEdge);
+            } else {
+                delete options.manipulation.addEdge;
             }
         } catch (exception) {
             console.log("Error: failed to parse input addEdge function string");
@@ -111,27 +114,57 @@ export default class DashNetwork extends Component {
         }
 
         try {
-            if (typeof(options.manipulation.editEdge) !== 'string') {
+            if (typeof(options.manipulation.editEdge) === 'string') {
                 options.manipulation.editEdge = this.convertStringToFunction(options.manipulation.editEdge);
+            } else {
+                delete options.manipulation.editEdge;
             }
         } catch (exception) {
             console.log("Error: failed to parse input editEdge function string");
         }
 
         try {
-            if (typeof(options.manipulation.deleteNode) !== 'string') {
+            if (typeof(options.manipulation.deleteNode) === 'string') {
                 options.manipulation.deleteNode = this.convertStringToFunction(options.manipulation.deleteNode);
+            } else {
+                delete options.manipulation.deleteNode;
             }
         } catch (exception) {
             console.log("Error: failed to parse input deleteNode function string");
         }
 
         try {
-            if (typeof(options.manipulation.deleteEdge) !== 'string') {
+            if (typeof(options.manipulation.deleteEdge) === 'string') {
                 options.manipulation.deleteEdge = this.convertStringToFunction(options.manipulation.deleteEdge);
+            } else {
+                delete options.manipulation.deleteEdge;
             }
         } catch (exception) {
             console.log("Error: failed to parse input deleteEdge function string");
+        }
+        
+        try {
+            if (typeof(options.nodes.ctxRenderer) === 'string') {
+                options.nodes.ctxRenderer = this.convertStringToFunction(options.nodes.ctxRenderer);
+            } else {
+                delete options.nodes.ctxRenderer;
+            }
+        } catch (exception) {
+            console.log("Error: failed to parse input ctxRenderer function string");
+        }
+
+        try {
+            for (const [key, value] of Object.entries(options.groups)) {
+                if (typeof(value.shape) === 'string' && value.shape.startsWith('custom')) {
+                    if (typeof(value.ctxRenderer) === 'string') {
+                        value.ctxRenderer = this.convertStringToFunction(value.ctxRenderer);
+
+                    }
+                }
+            }
+
+        } catch (exception) {
+            console.log("Error: failed to parse input group function string");
         }
 
         return options;
@@ -159,15 +192,15 @@ export default class DashNetwork extends Component {
         this.edges.add(data.edges)
 
         this.net = new Network(gd, {nodes: this.nodes, edges: this.edges}, this.prepareOptions(options))
-        this.registerGroupCallbacks(enableHciEvents, hci_events, setProps);
-        this.registerGroupCallbacks(enablePhysicsEvents, physics_events, setProps);
-        this.registerGroupCallbacks(enableOtherEvents, other_events, setProps);
+        this.registerGroupCallbacks(enableHciEvents, hci_events, this.props, setProps);
+        this.registerGroupCallbacks(enablePhysicsEvents, physics_events, this.props, setProps);
+        this.registerGroupCallbacks(enableOtherEvents, other_events, this.props, setProps);
 
         // Set some static props from the network
         setProps( { getSeed: this.net.getSeed() } );
     }
 
-    registerGroupCallbacks(enableHciEvents, all_events, setProps) {
+    registerGroupCallbacks(enableHciEvents, all_events, props, setProps) {
         let group_events = enableHciEvents;
         if (enableHciEvents === true) {
             group_events = all_events
@@ -179,13 +212,13 @@ export default class DashNetwork extends Component {
             group_events = group_events.filter(e => all_events.includes(e))
         }
         // Register Grouped Events Callbacks
-        this.registerCallbacks(group_events, setProps);
+        this.registerCallbacks(group_events, props, setProps);
     }
 
-    registerCallbacks(group_events, setProps) {
+    registerCallbacks(group_events, props, setProps) {
         for (let i = 0; i < group_events.length; i++) {
-            const event_name = group_events[i];
-            this.net.addEventListener(event_name, function (params) {
+            let event_name = group_events[i];
+            this.net.on(event_name, function (params) {
                 // deselectNode and deselectEdge have circular references which need to be removed first before serialization can proceed
                 if (event_name === 'deselectNode' || event_name === 'deselectEdge') {
 
@@ -203,9 +236,13 @@ export default class DashNetwork extends Component {
                 }
 
                 if (setProps) {
-                    setProps({[event_name]: params})
+                    let cur_event = event_name;
+                    if (props[cur_event] !== params) {
+                        params[cur_event + " ID"] = Math.floor(Math.random() * 100);
+                    }
+                    setProps({[cur_event]: params});
                 }
-            })
+            });
         }
     }
 
@@ -545,18 +582,16 @@ export default class DashNetwork extends Component {
 
         // Handle getBoundingBox function call
         if (nextProps.getBoundingBox !== this.props.getBoundingBox){
-            if(this.props.getBoundingBox !== null) {
-                try {
-                    const boundingBox = this.net.getBoundingBox(this.props.getBoundingBox.nodeId);
-                    setProps({
-                        getBoundingBox: {
-                            nodeId: this.props.getBoundingBox.nodeId,
-                            result: boundingBox
-                        }
-                    });
-                } catch (exception) {
-                    console.log("Error: failed to get the bounding box");
-                }
+            try {
+                const boundingBox = this.net.getBoundingBox(this.props.getBoundingBox.nodeId);
+                setProps({
+                    getBoundingBox: {
+                        nodeId: this.props.getBoundingBox.nodeId,
+                        result: boundingBox
+                    }
+                });
+            } catch (exception) {
+                console.log("Error: failed to get the bounding box");
             }
         }
 
@@ -635,7 +670,6 @@ export default class DashNetwork extends Component {
         // Handle getNodeAt function call
         if (nextProps.getNodeAt !== this.props.getNodeAt){
             try {
-                console.log(this.props.getNodeAt);
                 const node_at = this.net.getNodeAt(this.props.getNodeAt.position.x,
                     this.props.getNodeAt.position.y);
                 setProps( { getNodeAt: { id: this.props.getNodeAt.position,
@@ -1693,9 +1727,11 @@ DashNetwork.defaultProps = {
             {from: 2, to: 5}]
     },
     options: {},
+    afterDrawing: {},
     enableHciEvents: false,
     enablePhysicsEvents: false,
     enableOtherEvents: false,
+    enableEditMode: false,
     destroy: false,
     redraw: false,
     canvasToDOM: null,

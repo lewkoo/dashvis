@@ -29,6 +29,10 @@
             "type": null
           },
           {
+            "name": "props",
+            "type": null
+          },
+          {
             "name": "setProps",
             "type": null
           }
@@ -42,6 +46,10 @@
         "params": [
           {
             "name": "group_events",
+            "type": null
+          },
+          {
+            "name": "props",
             "type": null
           },
           {
@@ -403,7 +411,11 @@
           "name": "object"
         },
         "required": false,
-        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired after drawing on the canvas has been completed. Can be used to draw on top of the network."
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired after drawing on the canvas has been completed. Can be used to draw on top of the network.",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
       },
       "animationFinished": {
         "type": {
@@ -803,7 +815,11 @@
           "name": "bool"
         },
         "required": false,
-        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nProgrammatically enable the edit mode. Similar effect to pressing the edit button.\nReturns: None"
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nProgrammatically enable the edit mode. Similar effect to pressing the edit button.\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
       },
       "disableEditMode": {
         "type": {

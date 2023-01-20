@@ -1,5 +1,5 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
 export(DashNetwork)
-export(dashvis)
 export(dashNetwork)
+export(dashvis)

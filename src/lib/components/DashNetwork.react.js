@@ -259,8 +259,16 @@ export default class DashNetwork extends Component {
                 }
 
                 if (setProps) {
+
+                    if (event_name === 'controlNodeDragEnd') {
+                        if (params.controlEdge.from === undefined && params.controlEdge.to !== undefined ||
+                            params.controlEdge.from !== undefined && params.controlEdge.to === undefined) {
+                            return;
+                        }
+                    }
+
                     let cur_event = event_name;
-                    if (props[cur_event] !== params) {
+                    if (props[cur_event] !== params && JSON.stringify(params) === "{}") {
                         params[cur_event + " ID"] = Math.floor(Math.random() * 100);
                     }
                     setProps({[cur_event]: params});

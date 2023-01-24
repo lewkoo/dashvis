@@ -241,7 +241,7 @@ export default class DashNetwork extends Component {
     registerCallbacks(group_events, props, setProps) {
         for (let i = 0; i < group_events.length; i++) {
             let event_name = group_events[i];
-            this.net.on(event_name, function (params) {
+            this.net.addEventListener(event_name, function (params) {
                 // deselectNode and deselectEdge have circular references which need to be removed first before serialization can proceed
                 if (event_name === 'deselectNode' || event_name === 'deselectEdge') {
 

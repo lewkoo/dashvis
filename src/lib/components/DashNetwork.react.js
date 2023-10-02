@@ -534,37 +534,30 @@ export default class DashNetwork extends Component {
 
         // Handle manipulation methods
         if (nextProps.enableEditMode === true){
-            console.log("Enabling edit mode");
             this.net.enableEditMode();
         }
 
         if (nextProps.disableEditMode === true){
-            console.log("Disabling edit mode");
             this.net.disableEditMode();
         }
 
         if (nextProps.addNodeMode === true){
-            console.log("Entering add new node mode");
             this.net.addNodeMode();
         }
 
         if (nextProps.editNode === true){
-            console.log("Entering edit node mode");
             this.net.editNode();
         }
 
         if (nextProps.addEdgeMode === true){
-            console.log("Entering add new edge mode");
             this.net.addEdgeMode();
         }
 
         if (nextProps.editEdgeMode === true){
-            console.log("Entering edit edge mode");
             this.net.editEdgeMode();
         }
 
         if (nextProps.deleteSelected === true){
-            console.log("Deleting selected");
             this.net.deleteSelected();
         }
 

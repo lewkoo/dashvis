@@ -87,7 +87,9 @@ export default class DashNetwork extends Component {
             if (typeof(options.manipulation.addNode) === 'string') {
                 options.manipulation.addNode = this.convertStringToFunction(options.manipulation.addNode);
             } else {
-                delete options.manipulation.addNode;
+                options.manipulation.addNode = function (nodeData, callback) {
+                    callback(nodeData);
+                }
             }
         } catch (exception) {
             console.log("Error: failed to parse input addNode function string");
@@ -97,7 +99,9 @@ export default class DashNetwork extends Component {
             if (typeof(options.manipulation.addEdge) === 'string') {
                 options.manipulation.addEdge = this.convertStringToFunction(options.manipulation.addEdge);
             } else {
-                delete options.manipulation.addEdge;
+                options.manipulation.addEdge = function (edgeData, callback) {
+                    callback(edgeData);
+                }
             }
         } catch (exception) {
             console.log("Error: failed to parse input addEdge function string");
@@ -530,31 +534,31 @@ export default class DashNetwork extends Component {
 
         // Handle manipulation methods
         if (nextProps.enableEditMode === true){
-            this.net.enableEditMode()
+            this.net.enableEditMode();
         }
 
         if (nextProps.disableEditMode === true){
-            this.net.disableEditMode()
+            this.net.disableEditMode();
         }
 
         if (nextProps.addNodeMode === true){
-            this.net.addNodeMode()
+            this.net.addNodeMode();
         }
 
         if (nextProps.editNode === true){
-            this.net.editNode()
+            this.net.editNode();
         }
 
         if (nextProps.addEdgeMode === true){
-            this.net.addEdgeMode()
+            this.net.addEdgeMode();
         }
 
         if (nextProps.editEdgeMode === true){
-            this.net.editEdgeMode()
+            this.net.editEdgeMode();
         }
 
         if (nextProps.deleteSelected === true){
-            this.net.deleteSelected()
+            this.net.deleteSelected();
         }
 
         // Handle methods to get information on nodes and edges
@@ -1763,6 +1767,12 @@ DashNetwork.defaultProps = {
     enablePhysicsEvents: false,
     enableOtherEvents: false,
     enableEditMode: false,
+    disableEditMode: false,
+    addNodeMode: false,
+    editNode: false,
+    addEdgeMode: false,
+    editEdgeMode: false,
+    deleteSelected: false,
     destroy: false,
     redraw: false,
     canvasToDOM: null,

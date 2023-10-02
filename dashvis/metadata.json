@@ -826,42 +826,66 @@
           "name": "bool"
         },
         "required": false,
-        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nProgrammatically disable the edit mode. Similar effect to pressing the close icon (small cross in the corner of the toolbar).\nReturns: None"
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nProgrammatically disable the edit mode. Similar effect to pressing the close icon (small cross in the corner of the toolbar).\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
       },
       "addNodeMode": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into addNode mode. Having edit mode or manipulation enabled is not required.\nTo get out of this mode, call disableEditMode().\nThe callback functions defined in handlerFunctions still apply.\nTo use these methods without having the manipulation GUI, make sure you set enabled to false.\nReturns: None"
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into addNode mode. Having edit mode or manipulation enabled is not required.\nTo get out of this mode, call disableEditMode().\nThe callback functions defined in handlerFunctions still apply.\nTo use these methods without having the manipulation GUI, make sure you set enabled to false.\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
       },
       "editNode": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nEdit the selected node. The explanation from addNodeMode applies here as well.\nReturns: None"
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nEdit the selected node. The explanation from addNodeMode applies here as well.\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
       },
       "addEdgeMode": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into addEdge mode. The explanation from addNodeMode applies here as well.\nReturns: None"
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into addEdge mode. The explanation from addNodeMode applies here as well.\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
       },
       "editEdgeMode": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into editEdge mode. The explanation from addNodeMode applies here as well.\nReturns: None"
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nGo into editEdge mode. The explanation from addNodeMode applies here as well.\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
       },
       "deleteSelected": {
         "type": {
           "name": "bool"
         },
         "required": false,
-        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nDelete selected. Having edit mode or manipulation enabled is not required.\nReturns: None"
+        "description": "Write-only property. Pass true value to this property as an output to call the underlying function on the graph.\nDelete selected. Having edit mode or manipulation enabled is not required.\nReturns: None",
+        "defaultValue": {
+          "value": "false",
+          "computed": false
+        }
       },
       "getPositions": {
         "type": {

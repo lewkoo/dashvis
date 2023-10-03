@@ -227,11 +227,11 @@ export default class DashNetwork extends Component {
         setProps( { getSeed: this.net.getSeed() } );
     }
 
-    registerGroupCallbacks(enableHciEvents, all_events, props, setProps) {
-        let group_events = enableHciEvents;
-        if (enableHciEvents === true) {
+    registerGroupCallbacks(event_list, all_events, props, setProps) {
+        let group_events = event_list;
+        if (event_list === true) {
             group_events = all_events
-        } else if (enableHciEvents === false) {
+        } else if (event_list === false) {
             group_events = []
         }
         // Ensure that only valid event names are being listened to; ignore everything else
@@ -265,11 +265,10 @@ export default class DashNetwork extends Component {
                 if (setProps) {
 
                     if (event_name === 'controlNodeDragEnd') {
-                        if (params.controlEdge.from === undefined && params.controlEdge.to !== undefined ||
-                            params.controlEdge.from !== undefined && params.controlEdge.to === undefined) {
+                        if (params.controlEdge.from === undefined || params.controlEdge.to === undefined) {
                             return;
-                        }
-                    }
+                        } 
+                    } 
 
                     let cur_event = event_name;
                     if (props[cur_event] !== params && JSON.stringify(params) === "{}") {

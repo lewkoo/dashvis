@@ -1,6 +1,6 @@
 {
   "name": "dashvis",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Dash Plotly implementation of vis.js library",
   "repository": {
     "type": "git",
@@ -48,7 +48,7 @@
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
     "copyfiles": "^2.1.1",
-    "css-loader": "^3.0.0",
+    "css-loader": "^6.8.1",
     "eslint": "^6.0.1",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.0",

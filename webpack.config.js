@@ -94,7 +94,7 @@ module.exports = (env, argv) => {
                 })
             ],
             splitChunks: {
-                name: true,
+                name: "dashvis-shared",
                 cacheGroups: {
                     async: {
                         chunks: 'async',

@@ -60,9 +60,8 @@
     "style-loader": "^0.23.1",
     "styled-jsx": "^5.1.2",
     "terser-webpack-plugin": "^2.3.0",
-    "webpack": "^4.36.1",
-    "webpack-cli": "^3.3.6",
-    "webpack-serve": "^3.1.0"
+    "webpack": "^5.0.0",
+    "webpack-cli": "^5.1.4"
   },
   "engines": {
     "node": ">=8.11.0",

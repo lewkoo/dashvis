@@ -390,21 +390,33 @@
           "name": "object"
         },
         "required": false,
-        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired when the size of the canvas has been resized, either by a redraw call when the container div has changed\nin size, a setSize() call with new values or a setOptions() with new width and/or height values. Passes an object\nwith properties structured as:\n{\n  width: Number     // the new width  of the canvas\n  height: Number    // the new height of the canvas\n  oldWidth: Number  // the old width  of the canvas\n  oldHeight: Number // the old height of the canvas\n}"
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired when the size of the canvas has been resized, either by a redraw call when the container div has changed\nin size, a setSize() call with new values or a setOptions() with new width and/or height values. Passes an object\nwith properties structured as:\n{\n  width: Number     // the new width  of the canvas\n  height: Number    // the new height of the canvas\n  oldWidth: Number  // the old width  of the canvas\n  oldHeight: Number // the old height of the canvas\n}",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
       },
       "initRedraw": {
         "type": {
           "name": "object"
         },
         "required": false,
-        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired before the redrawing begins. The simulation step has completed at this point. Can be used to move custom\nelements before starting drawing the new frame."
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\nFired before the redrawing begins. The simulation step has completed at this point. Can be used to move custom\nelements before starting drawing the new frame.",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
       },
       "beforeDrawing": {
         "type": {
           "name": "object"
         },
         "required": false,
-        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\n   Fired after the canvas has been cleared, scaled and translated to the viewing position but before all edges\n   and nodes are drawn. Can be used to draw behind the network."
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is\na list that contains this event type.\n   Fired after the canvas has been cleared, scaled and translated to the viewing position but before all edges\n   and nodes are drawn. Can be used to draw behind the network.",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
       },
       "afterDrawing": {
         "type": {
@@ -422,14 +434,22 @@
           "name": "object"
         },
         "required": false,
-        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents`\nis a list that contains this event type.\nFired when an animation is finished."
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents`\nis a list that contains this event type.\nFired when an animation is finished.",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
       },
       "configChange": {
         "type": {
           "name": "object"
         },
         "required": false,
-        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents`\nis a list that contains this event type.\nFired when a user changes any option in the configurator.\nThe options object can be used with the setOptions method or stringified using JSON.stringify().\nYou do not have to manually put the options into the network: this is done automatically. You can use the event\nto store user options in the database."
+        "description": "Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents`\nis a list that contains this event type.\nFired when a user changes any option in the configurator.\nThe options object can be used with the setOptions method or stringified using JSON.stringify().\nYou do not have to manually put the options into the network: this is done automatically. You can use the event\nto store user options in the database.",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
       },
       "destroy": {
         "type": {

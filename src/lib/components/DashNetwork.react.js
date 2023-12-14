@@ -171,25 +171,26 @@ export default class DashNetwork extends Component {
         }
 
         try {
-            for (const [key, value] of Object.entries(options.groups)) {
-                if (typeof(value.shape) === 'string' && value.shape.startsWith('custom')) {
-                    if (typeof(value.ctxRenderer) === 'string') {
-                        value.ctxRenderer = this.convertStringToFunction(value.ctxRenderer);
+            if (typeof (options.groups) === 'object' && options.groups !== null) {
+                for (const [key, value] of Object.entries(options.groups)) {
+                    if (typeof (value.shape) === 'string' && value.shape.startsWith('custom')) {
+                        if (typeof (value.ctxRenderer) === 'string') {
+                            value.ctxRenderer = this.convertStringToFunction(value.ctxRenderer);
 
+                        }
                     }
+
+                    if (typeof (value.chosen) === 'object') {
+                        if (typeof (value.chosen.node) === 'string') {
+                            value.chosen.node = this.convertStringToFunction(value.chosen.node);
+                        }
+                        if (typeof (value.chosen.label) === 'string') {
+                            value.chosen.label = this.convertStringToFunction(value.chosen.label);
+                        }
+                    }
+
                 }
-
-                if (typeof(value.chosen) === 'object') {
-                    if (typeof(value.chosen.node) === 'string') {
-                        value.chosen.node = this.convertStringToFunction(value.chosen.node);
-                    }
-                    if (typeof(value.chosen.label) === 'string') {
-                        value.chosen.label = this.convertStringToFunction(value.chosen.label);
-                    }
-                }
-
             }
-
         } catch (exception) {
             console.log("Error: failed to parse input group function string");
         }
@@ -227,6 +228,13 @@ export default class DashNetwork extends Component {
         setProps( { getSeed: this.net.getSeed() } );
     }
 
+    componentWillUnmount(){
+        // Unload the network
+        this.net.destroy();
+        this.net = null;
+
+    }
+
     registerGroupCallbacks(event_list, all_events, props, setProps) {
         let group_events = event_list;
         if (event_list === true) {
@@ -246,7 +254,8 @@ export default class DashNetwork extends Component {
         for (let i = 0; i < group_events.length; i++) {
             let event_name = group_events[i];
             this.net.addEventListener(event_name, function (params) {
-                // deselectNode and deselectEdge have circular references which need to be removed first before serialization can proceed
+                // deselectNode and deselectEdge have circular references which need to be removed first
+                // before serialization can proceed
                 if (event_name === 'deselectNode' || event_name === 'deselectEdge') {
 
                    params['previousSelection']['edges'] = params['previousSelection']['edges'].map(edge => {
@@ -268,9 +277,9 @@ export default class DashNetwork extends Component {
                         if (params.controlEdge.from === undefined || params.controlEdge.to === undefined) {
                             return;
                         } 
-                    } 
+                    }
 
-                    let cur_event = event_name;
+                    const cur_event = event_name;
                     if (props[cur_event] !== params && JSON.stringify(params) === "{}") {
                         params[cur_event + " ID"] = Math.floor(Math.random() * 100);
                     }
@@ -1152,6 +1161,14 @@ DashNetwork.propTypes = {
      * }
      */
     resize: PropTypes.object,
+    // resize: PropTypes.exact(
+    //     {
+    //         width: PropTypes.number,
+    //         height: PropTypes.number,
+    //         oldWidth: PropTypes.number,
+    //         oldHeight: PropTypes.number
+    //     }
+    // ),
 
     /**
      * Read-only prop. To use this, make sure that `enableOtherEvents` is set to `True`, or that `enableOtherEvents` is
@@ -1761,7 +1778,6 @@ DashNetwork.defaultProps = {
             {from: 2, to: 5}]
     },
     options: {},
-    afterDrawing: {},
     enableHciEvents: false,
     enablePhysicsEvents: false,
     enableOtherEvents: false,
@@ -1788,4 +1804,10 @@ DashNetwork.defaultProps = {
     startSimulation: null,
     stopSimulation: null,
     stabilize: null,
+    resize: {},
+    initRedraw: {},
+    beforeDrawing: {},
+    afterDrawing: {},
+    animationFinished: {},
+    configChange: {},
 };

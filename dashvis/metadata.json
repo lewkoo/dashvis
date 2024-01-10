@@ -627,6 +627,34 @@
           "computed": false
         }
       },
+      "clusterByConnections": {
+        "type": {
+          "name": "exact",
+          "value": {
+            "nodeIds": {
+              "name": "arrayOf",
+              "value": {
+                "name": "string"
+              },
+              "required": false
+            },
+            "options": {
+              "name": "arrayOf",
+              "value": {
+                "name": "custom",
+                "raw": "ClusteringOptions"
+              },
+              "required": false
+            }
+          }
+        },
+        "required": false,
+        "description": "Function call. Returns nothing.\nThis method looks at the provided nodes IDs and makes a cluster for all of them.\nThe behaviour can be customized by proving the options object. All options of this object are explained below.\nThe joinCondition is only presented with the connected nodes.",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
       "clusterByHubsize": {
         "type": {
           "name": "exact",

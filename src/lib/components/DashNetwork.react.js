@@ -353,35 +353,35 @@ export default class DashNetwork extends Component {
         }
 
         // Handle on, off, once 'function' calls
-        if (nextProps.on && this.props.on !== nextProps.on) {
-            let func = this.convertStringToFunction(nextProps.on.callback)
+        if (this.props.on && this.props.on !== nextProps.on) {
+            const func = this.convertStringToFunction(this.props.on.callback)
             if (func) {
-                this.net.on(nextProps.on.event_name, func);
+                this.net.on(this.props.on.event_name, func);
                 this.active_functions[func.name] = func
-                setProps(this.props.on, nextProps.on);
+                setProps(nextProps.on, this.props.on);
             }
         }
 
-        if (nextProps.off && this.props.off !== nextProps.off) {
+        if (this.props.off && this.props.off !== nextProps.off) {
             let func = null;
             let func_pointer = null;
-            if (nextProps.off.callback) {
-                func = this.convertStringToFunction(nextProps.off.callback)
+            if (this.props.off.callback) {
+                func = this.convertStringToFunction(this.props.off.callback)
                 func_pointer = this.active_functions[func.name];
             }
 
             if (func) {
-                this.net.off(nextProps.off.event_name, func_pointer);
+                this.net.off(this.props.off.event_name, func_pointer);
                 delete this.active_functions[func.name]
-                setProps(this.props.off, nextProps.off);
+                setProps(nextProps.off, this.props.off);
             }
         }
 
-        if (nextProps.once && this.props.once !== nextProps.once) {
-            let func = this.convertStringToFunction(nextProps.once.callback)
+        if (this.props.once && this.props.once !== nextProps.once) {
+            let func = this.convertStringToFunction(this.props.once.callback)
             if (func) {
-                this.net.once(nextProps.once.event_name, func);
-                setProps(this.props.once, nextProps.once);
+                this.net.once(this.props.once.event_name, func);
+                setProps(nextProps.once, this.props.once);
             }
         }
 
@@ -424,7 +424,7 @@ export default class DashNetwork extends Component {
         }
 
         // Handle cluster by connection action
-        if (nextProps.clusterByConnection !== this.props.clusterByConnection){
+        if (nextProps.clusterByConnection !== this.props.clusterByConnection && this.props.clusterByConnection !== null){
             const cluster_options = this.createClusterOptions(this.props.clusterByConnection.options);
             try {
                 this.net.clusterByConnection(this.props.clusterByConnection.nodeId, cluster_options);
@@ -533,7 +533,7 @@ export default class DashNetwork extends Component {
         // Handle open cluster
         if (nextProps.openCluster !== this.props.openCluster){
             try {
-                this.net.openCluster(this.props.openCluster.nodeId, this.props.openCluster.options);
+                this.net.openCluster(this.props.openCluster.nodeId);
                 setProps( { openCluster: this.props.openCluster } );
             } catch (exception) {
                 console.log("Error: failed to open cluster");

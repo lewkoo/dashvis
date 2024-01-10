@@ -433,6 +433,20 @@ export default class DashNetwork extends Component {
                 console.log("Error: failed to cluster by connection");
             }
         }
+        
+        // Handle cluster by connections action
+        if (nextProps.clusterByConnections !== this.props.clusterByConnections && this.props.clusterByConnections !== null){
+
+            try {
+                for (let i = 0; i < this.props.clusterByConnections.nodeIds.length; i++) {
+                    let cluster_options = this.createClusterOptions(this.props.clusterByConnections.options[i]);
+                    this.net.clusterByConnection(this.props.clusterByConnections.nodeIds[i], cluster_options);
+                }
+                setProps( { clusterByConnections: this.props.clusterByConnections } );
+            } catch (exception) {
+                console.log("Error: failed to cluster by connections");
+            }
+        }
 
         // Handle cluster by hubsize action
         if (nextProps.clusterByHubsize !== this.props.clusterByHubsize){
@@ -1310,6 +1324,15 @@ DashNetwork.propTypes = {
     }),
 
     /** Function call. Returns nothing.
+     * This method looks at the provided nodes IDs and makes a cluster for all of them.
+     * The behaviour can be customized by proving the options object. All options of this object are explained below.
+     * The joinCondition is only presented with the connected nodes. */
+    clusterByConnections: PropTypes.exact({
+        nodeIds: PropTypes.arrayOf(PropTypes.string),
+        options: PropTypes.arrayOf(ClusteringOptions)
+    }),
+
+    /** Function call. Returns nothing.
      * This method checks all nodes in the network and those with a equal or higher amount of edges than
      * specified with the hubsize qualify. If a hubsize is not defined, the hubsize will be determined
      * as the average value plus two standard deviations.
@@ -1794,6 +1817,7 @@ DashNetwork.defaultProps = {
     DOMtoCanvas: null,
     cluster: null,
     clusterByConnection: null,
+    clusterByConnections: null,
     setSize: {},
     getPosition: null,
     getPositions: null,

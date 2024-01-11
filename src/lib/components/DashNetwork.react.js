@@ -431,6 +431,21 @@ export default class DashNetwork extends Component {
                 setProps( { clusterByConnection: this.props.clusterByConnection } );
             } catch (exception) {
                 console.log("Error: failed to cluster by connection");
+                console.log(exception);
+            }
+        }
+
+            // Handle cluster by connection action
+        if (nextProps.clusterNodesByConnection !== this.props.clusterNodesByConnection && this.props.clusterNodesByConnection !== null){
+            const cluster_options = this.createClusterOptions(this.props.clusterNodesByConnection.options);
+            try {
+                for (let i = 0; i < this.props.clusterNodesByConnection.nodeIds.length; i++) {
+                    this.net.clusterByConnection(this.props.clusterNodesByConnection.nodeIds[i], cluster_options);
+                }
+                setProps( { clusterNodesByConnection: this.props.clusterNodesByConnection } );
+            } catch (exception) {
+                console.log("Error: failed to cluster nodes by connection");
+                console.log(exception);
             }
         }
         
@@ -445,6 +460,7 @@ export default class DashNetwork extends Component {
                 setProps( { clusterByConnections: this.props.clusterByConnections } );
             } catch (exception) {
                 console.log("Error: failed to cluster by connections");
+                console.log(exception);
             }
         }
 
@@ -1324,7 +1340,18 @@ DashNetwork.propTypes = {
     }),
 
     /** Function call. Returns nothing.
+     * This method looks at the provided node IDs and makes a cluster of all of them and all their connected nodes.
+     * The behaviour can be customized by proving the options object. Same options object is applied to all node IDs.
+     * All options of this object are explained below.
+     * The joinCondition is only presented with the connected nodes. */
+    clusterNodesByConnection: PropTypes.exact({
+        nodeIds: PropTypes.arrayOf(PropTypes.string),
+        options: ClusteringOptions
+    }),
+
+    /** Function call. Returns nothing.
      * This method looks at the provided nodes IDs and makes a cluster for all of them.
+     * Allows one to supply a bespoke options object for each node ID. Arrays must be parallel and of equal length.
      * The behaviour can be customized by proving the options object. All options of this object are explained below.
      * The joinCondition is only presented with the connected nodes. */
     clusterByConnections: PropTypes.exact({
@@ -1790,11 +1817,11 @@ DashNetwork.propTypes = {
 };
 DashNetwork.defaultProps = {
     data: {
-        nodes: [{id: 1, cid: 1, label: 'Node 1', title: 'This is Node 1'},
-            {id: 2, cid: 1, label: 'Node 2', title: 'This is Node 2'},
-            {id: 3, cid: 1, label: 'Node 3', title: 'This is Node 3'},
-            {id: 4, label: 'Node 4', title: 'This is Node 4'},
-            {id: 5, label: 'Node 5', title: 'This is Node 5'}],
+        nodes: [{id: 1, cid: 1, label: 'Node 1', title: 'This is Node 1', level: 1},
+            {id: 2, cid: 1, label: 'Node 2', title: 'This is Node 2', level: 2},
+            {id: 3, cid: 1, label: 'Node 3', title: 'This is Node 3', level: 2},
+            {id: 4, label: 'Node 4', title: 'This is Node 4', level: 3},
+            {id: 5, label: 'Node 5', title: 'This is Node 5', level: 3}],
         edges: [{from: 1, to: 3},
             {from: 1, to: 2},
             {from: 2, to: 4},
@@ -1817,6 +1844,7 @@ DashNetwork.defaultProps = {
     DOMtoCanvas: null,
     cluster: null,
     clusterByConnection: null,
+    clusterNodesByConnection: null,
     clusterByConnections: null,
     setSize: {},
     getPosition: null,

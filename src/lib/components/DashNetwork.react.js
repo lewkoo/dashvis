@@ -225,8 +225,6 @@ export default class DashNetwork extends Component {
         this.registerGroupCallbacks(enableOtherEvents, other_events, this.props, setProps);
 
         // Set some static props from the network
-        setProps( { data: this.net.data } );
-        setProps( { options: this.prepareOptions(options) } );
         setProps( { getSeed: this.net.getSeed() } );
     }
 

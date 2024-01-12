@@ -225,6 +225,8 @@ export default class DashNetwork extends Component {
         this.registerGroupCallbacks(enableOtherEvents, other_events, this.props, setProps);
 
         // Set some static props from the network
+        setProps( { data: this.net.data } );
+        setProps( { options: this.prepareOptions(options) } );
         setProps( { getSeed: this.net.getSeed() } );
     }
 
@@ -316,6 +318,12 @@ export default class DashNetwork extends Component {
         }
     }
 
+    post_clustering_stabilize() {
+        const fit_value_backup = JSON.parse(JSON.stringify(this.net.physics.options.stabilization.fit));
+        this.net.setOptions({ physics: { stabilization: { fit: false } } });
+        this.net.stabilize();
+        this.net.setOptions({ physics: { stabilization: { fit: fit_value_backup } } });
+    }
 
     componentDidUpdate(nextProps) {
 
@@ -417,9 +425,13 @@ export default class DashNetwork extends Component {
             const cluster_options = this.createClusterOptions(this.props.cluster.options);
             try {
                 this.net.cluster(cluster_options);
+                if (this.props.cluster.stabilize === true) {
+                    this.post_clustering_stabilize();
+                }
                 setProps( { cluster: this.props.cluster } );
             } catch (exception) {
                 console.log("Error: failed to cluster");
+                console.log(exception);
             }
         }
 
@@ -428,6 +440,9 @@ export default class DashNetwork extends Component {
             const cluster_options = this.createClusterOptions(this.props.clusterByConnection.options);
             try {
                 this.net.clusterByConnection(this.props.clusterByConnection.nodeId, cluster_options);
+                if (this.props.clusterByConnection.stabilize === true) {
+                    this.post_clustering_stabilize();
+                }
                 setProps( { clusterByConnection: this.props.clusterByConnection } );
             } catch (exception) {
                 console.log("Error: failed to cluster by connection");
@@ -441,6 +456,9 @@ export default class DashNetwork extends Component {
             try {
                 for (let i = 0; i < this.props.clusterNodesByConnection.nodeIds.length; i++) {
                     this.net.clusterByConnection(this.props.clusterNodesByConnection.nodeIds[i], cluster_options);
+                }
+                if (this.props.clusterNodesByConnection.stabilize === true) {
+                    this.post_clustering_stabilize();
                 }
                 setProps( { clusterNodesByConnection: this.props.clusterNodesByConnection } );
             } catch (exception) {
@@ -457,6 +475,9 @@ export default class DashNetwork extends Component {
                     let cluster_options = this.createClusterOptions(this.props.clusterByConnections.options[i]);
                     this.net.clusterByConnection(this.props.clusterByConnections.nodeIds[i], cluster_options);
                 }
+                if (this.props.clusterByConnections.stabilize === true) {
+                    this.post_clustering_stabilize();
+                }
                 setProps( { clusterByConnections: this.props.clusterByConnections } );
             } catch (exception) {
                 console.log("Error: failed to cluster by connections");
@@ -469,6 +490,9 @@ export default class DashNetwork extends Component {
             const cluster_options = this.createClusterOptions(this.props.clusterByHubsize.options);
             try {
                 this.net.clusterByHubsize(this.props.clusterByHubsize.hubsize, cluster_options);
+                if (this.props.clusterByHubsize.stabilize === true) {
+                    this.post_clustering_stabilize();
+                }
                 setProps( { clusterByHubsize: this.props.clusterByHubsize } );
             } catch (exception) {
                 console.log("Error: failed to cluster by hubsize");
@@ -480,6 +504,9 @@ export default class DashNetwork extends Component {
             const cluster_options = this.createClusterOptions(this.props.clusterOutliers.options);
             try {
                 this.net.clusterOutliers(cluster_options);
+                if (this.props.clusterOutliers.stabilize === true) {
+                    this.post_clustering_stabilize();
+                }
                 setProps( { clusterOutliers: this.props.clusterOutliers } );
             } catch (exception) {
                 console.log("Error: failed to cluster outliers");
@@ -561,12 +588,16 @@ export default class DashNetwork extends Component {
         }
 
         // Handle open cluster
-        if (nextProps.openCluster !== this.props.openCluster){
+        if (nextProps.openCluster !== this.props.openCluster && this.props.openCluster !== null){
             try {
                 this.net.openCluster(this.props.openCluster.nodeId);
+                if (this.props.openCluster.stabilize === true) {
+                    this.post_clustering_stabilize();
+                }
                 setProps( { openCluster: this.props.openCluster } );
             } catch (exception) {
                 console.log("Error: failed to open cluster");
+                console.log(exception);
             }
         }
 
@@ -862,6 +893,8 @@ export default class DashNetwork extends Component {
         }
 
     }
+
+
 
     render() {
         const {id, style} = this.props;
@@ -1328,6 +1361,7 @@ DashNetwork.propTypes = {
      * 	The options object is explained in full below. The joinCondition function is presented with all nodes. */
     cluster: PropTypes.exact({
         options: ClusteringOptions,
+        stabilize: PropTypes.bool
     }),
 
     /** Function call. Returns nothing.
@@ -1336,7 +1370,8 @@ DashNetwork.propTypes = {
      * The joinCondition is only presented with the connected nodes. */
     clusterByConnection: PropTypes.exact({
         nodeId: PropTypes.string,
-        options: ClusteringOptions
+        options: ClusteringOptions,
+        stabilize: PropTypes.bool
     }),
 
     /** Function call. Returns nothing.
@@ -1346,7 +1381,8 @@ DashNetwork.propTypes = {
      * The joinCondition is only presented with the connected nodes. */
     clusterNodesByConnection: PropTypes.exact({
         nodeIds: PropTypes.arrayOf(PropTypes.string),
-        options: ClusteringOptions
+        options: ClusteringOptions,
+        stabilize: PropTypes.bool,
     }),
 
     /** Function call. Returns nothing.
@@ -1356,7 +1392,8 @@ DashNetwork.propTypes = {
      * The joinCondition is only presented with the connected nodes. */
     clusterByConnections: PropTypes.exact({
         nodeIds: PropTypes.arrayOf(PropTypes.string),
-        options: PropTypes.arrayOf(ClusteringOptions)
+        options: PropTypes.arrayOf(ClusteringOptions),
+        stabilize: PropTypes.bool
     }),
 
     /** Function call. Returns nothing.
@@ -1368,7 +1405,8 @@ DashNetwork.propTypes = {
      * The options object is described for clusterByHubsize and does the same here. */
     clusterByHubsize: PropTypes.exact({
         hubsize: PropTypes.number,
-        options: ClusteringOptions
+        options: ClusteringOptions,
+        stabilize: PropTypes.bool,
     }),
 
     /** Function call. Returns nothing.
@@ -1376,6 +1414,7 @@ DashNetwork.propTypes = {
      *  The options object is explained in full below. */
     clusterOutliers: PropTypes.exact({
         options: ClusteringOptions,
+        stabilize: PropTypes.bool,
     }),
 
     /** Function call. Returns array of node ids showing in which clusters the desired node id exists in (if any).
@@ -1462,11 +1501,14 @@ DashNetwork.propTypes = {
      * a new object. This has to be an object with keys equal to the nodeIds that exist in the containedNodesPositions
      * and an {x:x,y:y} position object.
      *
+     * Set 'stabilize' to true to re-draw the network immediately and avoid user-visible stabilization.
+     *
      * For all nodeIds not listed in this returned object, we will position them at the location of the cluster.
      * This is also the default behaviour when no releaseFunction is defined. */
     openCluster: PropTypes.shape({
         nodeId: PropTypes.string,
-        options: PropTypes.object
+        options: PropTypes.object,
+        stabilize: PropTypes.bool,
     }),
 
     /** Layout methods */
@@ -1818,8 +1860,8 @@ DashNetwork.propTypes = {
 DashNetwork.defaultProps = {
     data: {
         nodes: [{id: 1, cid: 1, label: 'Node 1', title: 'This is Node 1', level: 1},
-            {id: 2, cid: 1, label: 'Node 2', title: 'This is Node 2', level: 2},
-            {id: 3, cid: 1, label: 'Node 3', title: 'This is Node 3', level: 2},
+            {id: 2, cid: 2, label: 'Node 2', title: 'This is Node 2', level: 2},
+            {id: 3, label: 'Node 3', title: 'This is Node 3', level: 2},
             {id: 4, label: 'Node 4', title: 'This is Node 4', level: 3},
             {id: 5, label: 'Node 5', title: 'This is Node 5', level: 3}],
         edges: [{from: 1, to: 3},

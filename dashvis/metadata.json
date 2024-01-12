@@ -82,6 +82,13 @@
           }
         ],
         "returns": null
+      },
+      {
+        "name": "post_clustering_stabilize",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
       }
     ],
     "props": {
@@ -115,7 +122,7 @@
         "required": false,
         "description": "Graph data object describing the graph to be drawn.\nPass a dict with two keys - 'nodes' and 'edges', set according to the vis.js documentation.\nIn Dash, this property also replaces vis.js setData function.\nSee https://visjs.github.io/vis-network/docs/network/#data",
         "defaultValue": {
-          "value": "{\n    nodes: [{id: 1, cid: 1, label: 'Node 1', title: 'This is Node 1', level: 1},\n        {id: 2, cid: 1, label: 'Node 2', title: 'This is Node 2', level: 2},\n        {id: 3, cid: 1, label: 'Node 3', title: 'This is Node 3', level: 2},\n        {id: 4, label: 'Node 4', title: 'This is Node 4', level: 3},\n        {id: 5, label: 'Node 5', title: 'This is Node 5', level: 3}],\n    edges: [{from: 1, to: 3},\n        {from: 1, to: 2},\n        {from: 2, to: 4},\n        {from: 2, to: 5}]\n}",
+          "value": "{\n    nodes: [{id: 1, cid: 1, label: 'Node 1', title: 'This is Node 1', level: 1},\n        {id: 2, cid: 2, label: 'Node 2', title: 'This is Node 2', level: 2},\n        {id: 3, label: 'Node 3', title: 'This is Node 3', level: 2},\n        {id: 4, label: 'Node 4', title: 'This is Node 4', level: 3},\n        {id: 5, label: 'Node 5', title: 'This is Node 5', level: 3}],\n    edges: [{from: 1, to: 3},\n        {from: 1, to: 2},\n        {from: 2, to: 4},\n        {from: 2, to: 5}]\n}",
           "computed": false
         }
       },
@@ -595,6 +602,10 @@
               "name": "custom",
               "raw": "ClusteringOptions",
               "required": false
+            },
+            "stabilize": {
+              "name": "bool",
+              "required": false
             }
           }
         },
@@ -616,6 +627,10 @@
             "options": {
               "name": "custom",
               "raw": "ClusteringOptions",
+              "required": false
+            },
+            "stabilize": {
+              "name": "bool",
               "required": false
             }
           }
@@ -641,6 +656,10 @@
             "options": {
               "name": "custom",
               "raw": "ClusteringOptions",
+              "required": false
+            },
+            "stabilize": {
+              "name": "bool",
               "required": false
             }
           }
@@ -670,6 +689,10 @@
                 "raw": "ClusteringOptions"
               },
               "required": false
+            },
+            "stabilize": {
+              "name": "bool",
+              "required": false
             }
           }
         },
@@ -692,6 +715,10 @@
               "name": "custom",
               "raw": "ClusteringOptions",
               "required": false
+            },
+            "stabilize": {
+              "name": "bool",
+              "required": false
             }
           }
         },
@@ -705,6 +732,10 @@
             "options": {
               "name": "custom",
               "raw": "ClusteringOptions",
+              "required": false
+            },
+            "stabilize": {
+              "name": "bool",
               "required": false
             }
           }
@@ -862,11 +893,15 @@
             "options": {
               "name": "object",
               "required": false
+            },
+            "stabilize": {
+              "name": "bool",
+              "required": false
             }
           }
         },
         "required": false,
-        "description": "Function call.\nOpens the cluster, releases the contained nodes and edges, removing the cluster node and cluster edges.\nThe options object is optional and currently supports one option, releaseFunction, which is a function that can be used to manually position the nodes after the cluster is opened.\nfunction releaseFunction (clusterPosition, containedNodesPositions) {\n    var newPositions = {};\n    // clusterPosition = {x:clusterX, y:clusterY};\n    // containedNodesPositions = {nodeId:{x:nodeX,y:nodeY}, nodeId2....}\n    newPositions[nodeId] = {x:newPosX, y:newPosY};\n    return newPositions;\n}\nThe containedNodesPositions contain the positions of the nodes in the cluster at the moment they were clustered.\nThis function is expected to return the newPositions, which can be the containedNodesPositions (altered) or\na new object. This has to be an object with keys equal to the nodeIds that exist in the containedNodesPositions\nand an {x:x,y:y} position object.\n\nFor all nodeIds not listed in this returned object, we will position them at the location of the cluster.\nThis is also the default behaviour when no releaseFunction is defined."
+        "description": "Function call.\nOpens the cluster, releases the contained nodes and edges, removing the cluster node and cluster edges.\nThe options object is optional and currently supports one option, releaseFunction, which is a function that can be used to manually position the nodes after the cluster is opened.\nfunction releaseFunction (clusterPosition, containedNodesPositions) {\n    var newPositions = {};\n    // clusterPosition = {x:clusterX, y:clusterY};\n    // containedNodesPositions = {nodeId:{x:nodeX,y:nodeY}, nodeId2....}\n    newPositions[nodeId] = {x:newPosX, y:newPosY};\n    return newPositions;\n}\nThe containedNodesPositions contain the positions of the nodes in the cluster at the moment they were clustered.\nThis function is expected to return the newPositions, which can be the containedNodesPositions (altered) or\na new object. This has to be an object with keys equal to the nodeIds that exist in the containedNodesPositions\nand an {x:x,y:y} position object.\n\nSet 'stabilize' to true to re-draw the network immediately and avoid user-visible stabilization.\n\nFor all nodeIds not listed in this returned object, we will position them at the location of the cluster.\nThis is also the default behaviour when no releaseFunction is defined."
       },
       "getSeed": {
         "type": {
